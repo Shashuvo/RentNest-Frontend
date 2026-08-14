@@ -80,9 +80,11 @@ export function Navbar({ user }: NavbarProps) {
                 {/* Logo */}
                 <Link href="/" className="flex items-center gap-2 font-semibold text-lg">
                     <span className="flex size-8 items-center justify-center rounded-md bg-primary text-primary-foreground">
-                        N
+                        <House className="size-4.5" strokeWidth={2.5} />
                     </span>
-                    <span className="tracking-tight">NextJS Press</span>
+                    <span className="tracking-tight">
+                        Rent<span className="text-primary">Nest</span>
+                    </span>
                 </Link>
 
                 {/* Desktop nav links */}
@@ -121,11 +123,11 @@ export function Navbar({ user }: NavbarProps) {
                                 >
                                     <Avatar className="size-9">
                                         <AvatarImage
-                                            src={user.data?.profile.photoUrl || "/placeholder.svg"}
-                                            alt={user.data?.profile.name}
+                                            src={user.data?.photoUrl || "/placeholder.svg"}
+                                            alt={user.data?.name}
                                         />
                                         <AvatarFallback>
-                                            {(user.data?.profile.name || "John Doe")
+                                            {(user.data?.name || "John Doe")
                                                 .split(" ")
                                                 .map((n) => n[0])
                                                 .join("")}
@@ -138,10 +140,10 @@ export function Navbar({ user }: NavbarProps) {
                                     <DropdownMenuLabel>
                                         <div className="flex flex-col gap-0.5">
                                             <span className="text-sm font-medium text-foreground">
-                                                {user.data?.profile.name || "John Doe"}
+                                                {user.data?.name || "John Doe"}
                                             </span>
                                             <span className="text-xs font-normal text-muted-foreground">
-                                                {user.data?.profile.email || "JohnDoe@email.com"}
+                                                {user.data?.email || "JohnDoe@email.com"}
                                             </span>
                                         </div>
                                     </DropdownMenuLabel>
