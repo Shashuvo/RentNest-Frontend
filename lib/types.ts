@@ -21,3 +21,13 @@ export type IUser = {
 export type NavbarProps = {
     user: IUser
 }
+
+export type LoginState = {
+    success: boolean,
+    statusCode: number,
+    message: string,
+    data: {
+        accessToken: string,
+        refreshToken: string
+    }
+}
