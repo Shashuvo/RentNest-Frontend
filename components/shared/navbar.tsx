@@ -29,9 +29,9 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { cn } from "@/lib/utils"
-// import { logout } from "@/service/logout"
 import { toast } from "sonner"
 import { NavbarProps } from "@/lib/types"
+import { logout } from "@/service/logout"
 
 const navItems = [
     { label: "Home", href: "/", icon: House },
@@ -64,7 +64,7 @@ export function Navbar({ user }: NavbarProps) {
         // }
 
         if (action === "logout") {
-            // await logout()
+            await logout();
             toast.success("User logged out successfully.")
             router.push("/login")
         }
@@ -177,7 +177,7 @@ export function Navbar({ user }: NavbarProps) {
                         </DropdownMenu>
                     ) : (
                         <Link href={"/login"}>
-                            <Button>Login</Button>
+                            <Button className="px-10">Login</Button>
                         </Link>
                     )}
 
