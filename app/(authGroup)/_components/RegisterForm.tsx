@@ -1,50 +1,40 @@
 "use client";
 
 import Link from "next/link";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useActionState, useEffect } from "react";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
-import {
-    registerSchema,
-    RegisterFormData,
-} from "@/lib/validations/auth";
+import { registerAction } from "../_actions/authAction";
 
 const RegisterForm = () => {
-    const {
-        register,
-        handleSubmit,
-        formState: { errors },
-    } = useForm<RegisterFormData>({
-        resolver: zodResolver(registerSchema),
-        defaultValues: {
-            role: "TENANT",
-        },
-    });
+    const [state, action, pending] = useActionState(registerAction, false);
 
-    const onSubmit = (data: RegisterFormData) => {
-        console.log(data);
-    };
+    useEffect(() => {
+        if (!state) return;
+
+        if (state.success) {
+            toast.success(
+                state.message || "Registration Successful."
+            );
+        } else {
+            toast.error(
+                state.message || "Registration Failed."
+            );
+        }
+    }, [state]);
 
     return (
-        <form
-            onSubmit={handleSubmit(onSubmit)}
-            className="space-y-4"
-        >
+        <form action={action} className="space-y-4">
+
             {/* Name */}
             <div>
                 <input
                     className="w-full rounded-md border bg-transparent px-3 py-2.5 text-sm outline-none transition focus:border-primary"
                     type="text"
+                    name="name"
                     placeholder="Full Name"
-                    {...register("name")}
                 />
-
-                {errors.name && (
-                    <p className="mt-1 text-sm text-red-500!">
-                        {errors.name.message}
-                    </p>
-                )}
             </div>
 
             {/* Email */}
@@ -52,15 +42,9 @@ const RegisterForm = () => {
                 <input
                     className="w-full rounded-md border bg-transparent px-3 py-2.5 text-sm outline-none transition focus:border-primary"
                     type="email"
+                    name="email"
                     placeholder="Email"
-                    {...register("email")}
                 />
-
-                {errors.email && (
-                    <p className="mt-1 text-sm text-red-500!">
-                        {errors.email.message}
-                    </p>
-                )}
             </div>
 
             {/* Password */}
@@ -68,15 +52,9 @@ const RegisterForm = () => {
                 <input
                     className="w-full rounded-md border bg-transparent px-3 py-2.5 text-sm outline-none transition focus:border-primary"
                     type="password"
+                    name="password"
                     placeholder="Password"
-                    {...register("password")}
                 />
-
-                {errors.password && (
-                    <p className="mt-1 text-sm text-red-500!">
-                        {errors.password.message}
-                    </p>
-                )}
             </div>
 
             {/* Confirm Password */}
@@ -84,15 +62,9 @@ const RegisterForm = () => {
                 <input
                     className="w-full rounded-md border bg-transparent px-3 py-2.5 text-sm outline-none transition focus:border-primary"
                     type="password"
+                    name="confirmPassword"
                     placeholder="Confirm Password"
-                    {...register("confirmPassword")}
                 />
-
-                {errors.confirmPassword && (
-                    <p className="mt-1 text-sm text-red-500!">
-                        {errors.confirmPassword.message}
-                    </p>
-                )}
             </div>
 
             {/* Phone */}
@@ -100,15 +72,9 @@ const RegisterForm = () => {
                 <input
                     className="w-full rounded-md border bg-transparent px-3 py-2.5 text-sm outline-none transition focus:border-primary"
                     type="tel"
+                    name="phone"
                     placeholder="Phone Number"
-                    {...register("phone")}
                 />
-
-                {errors.phone && (
-                    <p className="mt-1 text-sm text-red-500!">
-                        {errors.phone.message}
-                    </p>
-                )}
             </div>
 
             {/* Address */}
@@ -116,15 +82,9 @@ const RegisterForm = () => {
                 <input
                     className="w-full rounded-md border bg-transparent px-3 py-2.5 text-sm outline-none transition focus:border-primary"
                     type="text"
+                    name="address"
                     placeholder="Address"
-                    {...register("address")}
                 />
-
-                {errors.address && (
-                    <p className="mt-1 text-sm text-red-500!">
-                        {errors.address.message}
-                    </p>
-                )}
             </div>
 
             {/* Role */}
@@ -134,11 +94,13 @@ const RegisterForm = () => {
                 </p>
 
                 <div className="grid grid-cols-2 gap-2 rounded-md border p-1">
+
                     <label className="cursor-pointer">
                         <input
                             type="radio"
+                            name="role"
                             value="TENANT"
-                            {...register("role")}
+                            defaultChecked
                             className="peer sr-only"
                         />
 
@@ -150,8 +112,8 @@ const RegisterForm = () => {
                     <label className="cursor-pointer">
                         <input
                             type="radio"
+                            name="role"
                             value="LANDLORD"
-                            {...register("role")}
                             className="peer sr-only"
                         />
 
@@ -159,18 +121,17 @@ const RegisterForm = () => {
                             Landlord
                         </div>
                     </label>
-                </div>
 
-                {errors.role && (
-                    <p className="text-sm text-red-500!">
-                        {errors.role.message}
-                    </p>
-                )}
+                </div>
             </div>
 
             {/* Register Button */}
-            <Button type="submit" className="w-full">
-                Register
+            <Button
+                type="submit"
+                className="w-full"
+                disabled={pending}
+            >
+                {pending ? "Creating Account..." : "Register"}
             </Button>
 
             {/* Login Link */}
@@ -183,6 +144,7 @@ const RegisterForm = () => {
                     Login
                 </Link>
             </p>
+
         </form>
     );
 };

@@ -1,7 +1,7 @@
 "use server";
 
-import { LoginState } from "@/lib/types";
-import { loginSchema } from "@/lib/validations/auth";
+import { LoginState, RegisterState } from "@/lib/types";
+import { loginSchema, registerSchema } from "@/lib/validations/auth";
 import { cookies } from "next/headers";
 
 export const loginAction = async (prevState: LoginState, formData: FormData) => {
@@ -24,8 +24,7 @@ export const loginAction = async (prevState: LoginState, formData: FormData) => 
         password,
     };
 
-    const res = await fetch(
-        `${process.env.BACKEND_API_URL}/api/auth/login`,
+    const res = await fetch(`${process.env.BACKEND_API_URL}/api/auth/login`,
         {
             method: "POST",
             headers: {
@@ -60,6 +59,45 @@ export const loginAction = async (prevState: LoginState, formData: FormData) => 
             }
         );
     }
+
+    return result;
+};
+
+
+export const registerAction = async (prevState: RegisterState, formData: FormData) => {
+    const payload = {
+        name: formData.get("name"),
+        email: formData.get("email"),
+        password: formData.get("password"),
+        confirmPassword: formData.get("confirmPassword"),
+        phone: formData.get("phone"),
+        address: formData.get("address"),
+        role: formData.get("role"),
+    };
+
+    // Validate with Zod
+    const validation = registerSchema.safeParse(payload);
+
+    if (!validation.success) {
+        return {
+            success: false,
+            message: validation.error.issues[0].message,
+        };
+    }
+
+    // Only send validated data to backend
+    const res = await fetch(
+        `${process.env.BACKEND_API_URL}/api/auth/register`,
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(validation.data),
+        }
+    );
+
+    const result = await res.json();
 
     return result;
 };
