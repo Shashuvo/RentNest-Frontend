@@ -10,7 +10,7 @@ const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
 
 export const metadata: Metadata = {
   title: "RentNest",
-  description: "Rental property marketplace",
+  description: "Home is closer than you think",
 };
 
 export default function RootLayout({
