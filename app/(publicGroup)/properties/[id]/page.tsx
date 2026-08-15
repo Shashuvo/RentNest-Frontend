@@ -6,7 +6,6 @@ import {
     Bath,
     Bed,
     CalendarCheck,
-    Home,
     MapPin,
     MessageSquare,
     Ruler,
@@ -18,6 +17,7 @@ import {
 import { Button } from "@/components/ui/button"
 import type { Property, Review } from "@/lib/types"
 import { getPropertyById, getPropertyReviews } from "../../_actions/propertyAction"
+import { PropertyGallery } from "../../_components/PropertyGallery"
 
 type PageProps = {
     params: Promise<{ id: string }>
@@ -57,39 +57,10 @@ export default async function PropertyDetailPage({ params }: PageProps) {
             {/* Image gallery */}
             <section className="px-6 pt-6 lg:px-12 xl:px-16">
                 <div className="mx-auto max-w-7xl">
-                    <div className="grid gap-3 md:grid-cols-4 md:grid-rows-2">
-                        <div className="relative h-72 overflow-hidden rounded-2xl bg-muted md:col-span-2 md:row-span-2 md:h-full">
-                            {property.images?.[0] ? (
-                                <Image
-                                    src={property.images[0]}
-                                    alt={property.title}
-                                    fill
-                                    priority
-                                    className="object-cover"
-                                    sizes="(max-width: 768px) 100vw, 50vw"
-                                />
-                            ) : (
-                                <div className="flex h-full items-center justify-center text-muted-foreground">
-                                    <Home className="size-10" />
-                                </div>
-                            )}
-                        </div>
-
-                        {property.images?.slice(1, 5).map((image, index) => (
-                            <div
-                                key={index}
-                                className="relative hidden h-full overflow-hidden rounded-2xl bg-muted md:block"
-                            >
-                                <Image
-                                    src={image}
-                                    alt={`${property.title} photo ${index + 2}`}
-                                    fill
-                                    className="object-cover"
-                                    sizes="25vw"
-                                />
-                            </div>
-                        ))}
-                    </div>
+                    <PropertyGallery
+                        images={property.images ?? []}
+                        title={property.title}
+                    />
                 </div>
             </section>
 
@@ -100,7 +71,7 @@ export default async function PropertyDetailPage({ params }: PageProps) {
                     <div>
                         <div className="flex flex-wrap items-start justify-between gap-4">
                             <div>
-                                <div className="mb-2 inline-flex items-center gap-2 rounded-full border border-primary/15 bg-card px-3 py-1 text-xs font-medium text-primary">
+                                <div className="mb-2 inline-flex items-center gap-2 rounded-full border border-primary/15 bg-card px-3 py-1.5 text-xs font-medium text-primary shadow-sm">
                                     <ShieldCheck className="size-3.5" />
                                     {property.category?.name ?? "Property"}
                                 </div>
@@ -130,43 +101,83 @@ export default async function PropertyDetailPage({ params }: PageProps) {
                                     ${property.price.toLocaleString()}
                                     <span className="text-base font-sans text-muted-foreground"> / month</span>
                                 </p>
-                                <p
-                                    className={`mt-1 text-sm font-medium ${property.isAvailable ? "text-primary" : "text-muted-foreground"
+                                <span
+                                    className={`mt-2 inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium ${property.isAvailable
+                                            ? "bg-emerald-500/10 text-emerald-600"
+                                            : "bg-muted text-muted-foreground"
                                         }`}
                                 >
+                                    <span
+                                        className={`h-1.5 w-1.5 rounded-full ${property.isAvailable ? "bg-emerald-500" : "bg-muted-foreground"
+                                            }`}
+                                    />
                                     {property.isAvailable ? "Available now" : "Not available"}
-                                </p>
+                                </span>
                             </div>
                         </div>
 
                         {/* Quick stats */}
                         <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
-                            <div className="rounded-xl border border-border bg-card p-4">
-                                <Bed className="size-5 text-primary" />
-                                <p className="mt-2 text-lg font-semibold text-foreground">{property.bedrooms}</p>
-                                <p className="text-xs text-muted-foreground">Bedrooms</p>
+                            <div className="group relative overflow-hidden rounded-2xl border border-border bg-card p-4 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_50px_-24px_hsl(var(--primary)/0.4)]">
+                                <div
+                                    className="pointer-events-none absolute -right-6 -top-6 h-24 w-24 rounded-full bg-primary/10 blur-2xl transition-opacity duration-300 group-hover:opacity-80"
+                                    aria-hidden="true"
+                                />
+                                <span className="relative flex h-11 w-11 items-center justify-center rounded-full bg-primary/10 text-primary ring-1 ring-primary/15 transition-transform duration-300 group-hover:scale-110">
+                                    <Bed className="size-5" />
+                                </span>
+                                <p className="relative mt-3 font-serif text-2xl tracking-tight text-foreground">
+                                    {property.bedrooms}
+                                </p>
+                                <p className="relative text-xs text-muted-foreground">Bedrooms</p>
+                                <div className="relative mt-2 h-1 w-8 rounded-full bg-primary/20 transition-all duration-300 group-hover:w-12 group-hover:bg-primary/40" />
                             </div>
 
-                            <div className="rounded-xl border border-border bg-card p-4">
-                                <Bath className="size-5 text-primary" />
-                                <p className="mt-2 text-lg font-semibold text-foreground">{property.bathrooms}</p>
-                                <p className="text-xs text-muted-foreground">Bathrooms</p>
+                            <div className="group relative overflow-hidden rounded-2xl border border-border bg-card p-4 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_50px_-24px_hsl(var(--primary)/0.4)]">
+                                <div
+                                    className="pointer-events-none absolute -right-6 -top-6 h-24 w-24 rounded-full bg-primary/10 blur-2xl transition-opacity duration-300 group-hover:opacity-80"
+                                    aria-hidden="true"
+                                />
+                                <span className="relative flex h-11 w-11 items-center justify-center rounded-full bg-primary/10 text-primary ring-1 ring-primary/15 transition-transform duration-300 group-hover:scale-110">
+                                    <Bath className="size-5" />
+                                </span>
+                                <p className="relative mt-3 font-serif text-2xl tracking-tight text-foreground">
+                                    {property.bathrooms}
+                                </p>
+                                <p className="relative text-xs text-muted-foreground">Bathrooms</p>
+                                <div className="relative mt-2 h-1 w-8 rounded-full bg-primary/20 transition-all duration-300 group-hover:w-12 group-hover:bg-primary/40" />
                             </div>
 
                             {property.area && (
-                                <div className="rounded-xl border border-border bg-card p-4">
-                                    <Ruler className="size-5 text-primary" />
-                                    <p className="mt-2 text-lg font-semibold text-foreground">{property.area}</p>
-                                    <p className="text-xs text-muted-foreground">Sq. ft.</p>
+                                <div className="group relative overflow-hidden rounded-2xl border border-border bg-card p-4 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_50px_-24px_hsl(var(--primary)/0.4)]">
+                                    <div
+                                        className="pointer-events-none absolute -right-6 -top-6 h-24 w-24 rounded-full bg-primary/10 blur-2xl transition-opacity duration-300 group-hover:opacity-80"
+                                        aria-hidden="true"
+                                    />
+                                    <span className="relative flex h-11 w-11 items-center justify-center rounded-full bg-primary/10 text-primary ring-1 ring-primary/15 transition-transform duration-300 group-hover:scale-110">
+                                        <Ruler className="size-5" />
+                                    </span>
+                                    <p className="relative mt-3 font-serif text-2xl tracking-tight text-foreground">
+                                        {property.area}
+                                    </p>
+                                    <p className="relative text-xs text-muted-foreground">Sq. ft.</p>
+                                    <div className="relative mt-2 h-1 w-8 rounded-full bg-primary/20 transition-all duration-300 group-hover:w-12 group-hover:bg-primary/40" />
                                 </div>
                             )}
 
-                            <div className="rounded-xl border border-border bg-card p-4">
-                                <CalendarCheck className="size-5 text-primary" />
-                                <p className="mt-2 text-lg font-semibold text-foreground">
+                            <div className="group relative overflow-hidden rounded-2xl border border-border bg-card p-4 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_50px_-24px_hsl(var(--primary)/0.4)]">
+                                <div
+                                    className="pointer-events-none absolute -right-6 -top-6 h-24 w-24 rounded-full bg-primary/10 blur-2xl transition-opacity duration-300 group-hover:opacity-80"
+                                    aria-hidden="true"
+                                />
+                                <span className="relative flex h-11 w-11 items-center justify-center rounded-full bg-primary/10 text-primary ring-1 ring-primary/15 transition-transform duration-300 group-hover:scale-110">
+                                    <CalendarCheck className="size-5" />
+                                </span>
+                                <p className="relative mt-3 font-serif text-2xl tracking-tight text-foreground">
                                     {property._count.rentalRequests}
                                 </p>
-                                <p className="text-xs text-muted-foreground">Requests</p>
+                                <p className="relative text-xs text-muted-foreground">Requests</p>
+                                <div className="relative mt-2 h-1 w-8 rounded-full bg-primary/20 transition-all duration-300 group-hover:w-12 group-hover:bg-primary/40" />
                             </div>
                         </div>
 
@@ -181,7 +192,9 @@ export default async function PropertyDetailPage({ params }: PageProps) {
                         {/* Reviews */}
                         <div className="mt-10">
                             <h2 className="flex items-center gap-2 font-serif text-xl text-foreground">
-                                <MessageSquare className="size-5 text-primary" />
+                                <span className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary">
+                                    <MessageSquare className="size-4" />
+                                </span>
                                 Reviews ({totalReviews})
                             </h2>
 
@@ -192,10 +205,13 @@ export default async function PropertyDetailPage({ params }: PageProps) {
                             ) : (
                                 <div className="mt-4 space-y-4">
                                     {reviews.map((review) => (
-                                        <div key={review.id} className="rounded-xl border border-border bg-card p-4">
+                                        <div
+                                            key={review.id}
+                                            className="rounded-2xl border border-border bg-card p-4 shadow-sm"
+                                        >
                                             <div className="flex items-center justify-between gap-3">
                                                 <div className="flex items-center gap-3">
-                                                    <div className="flex size-9 items-center justify-center overflow-hidden rounded-full bg-muted">
+                                                    <div className="flex size-9 items-center justify-center overflow-hidden rounded-full bg-muted ring-2 ring-primary/10">
                                                         {review.tenant.photoUrl ? (
                                                             <Image
                                                                 src={review.tenant.photoUrl}
@@ -218,7 +234,7 @@ export default async function PropertyDetailPage({ params }: PageProps) {
                                                     </div>
                                                 </div>
 
-                                                <div className="flex items-center gap-1 text-sm font-medium text-primary">
+                                                <div className="flex items-center gap-1 rounded-full bg-primary/10 px-2.5 py-1 text-sm font-medium text-primary">
                                                     <Star className="size-4 fill-primary text-primary" />
                                                     {review.rating}
                                                 </div>
@@ -236,13 +252,13 @@ export default async function PropertyDetailPage({ params }: PageProps) {
 
                     {/* Sidebar: landlord + CTA */}
                     <div className="lg:sticky lg:top-8 lg:self-start">
-                        <div className="rounded-2xl border border-border bg-card p-6 shadow-sm">
-                            <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                        <div className="rounded-2xl border border-border bg-card p-6 shadow-[0_16px_50px_-22px_hsl(var(--primary)/0.35)]">
+                            <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
                                 Listed by
                             </p>
 
                             <div className="mt-3 flex items-center gap-3">
-                                <div className="flex size-12 items-center justify-center overflow-hidden rounded-full bg-muted">
+                                <div className="flex size-12 items-center justify-center overflow-hidden rounded-full bg-muted ring-2 ring-primary/10">
                                     {property.landlord?.photoUrl ? (
                                         <Image
                                             src={property.landlord.photoUrl}
@@ -266,11 +282,15 @@ export default async function PropertyDetailPage({ params }: PageProps) {
                                 </div>
                             </div>
 
-                            <Button size="lg" className="mt-6 w-full rounded-xl">
+                            <Button size="lg" className="mt-6 w-full rounded-full shadow-sm">
                                 Contact landlord
                             </Button>
 
-                            <Button variant="outline" size="lg" className="mt-3 w-full rounded-xl">
+                            <Button
+                                variant="outline"
+                                size="lg"
+                                className="mt-3 w-full rounded-full border-primary/20 text-primary hover:bg-primary hover:text-primary-foreground"
+                            >
                                 Save property
                             </Button>
                         </div>

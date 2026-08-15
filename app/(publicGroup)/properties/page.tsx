@@ -4,6 +4,8 @@ import { useState } from "react"
 import {
   ArrowDownUp,
   BedDouble,
+  ChevronLeft,
+  ChevronRight,
   MapPin,
   RotateCcw,
   Search,
@@ -33,15 +35,21 @@ export default function PropertiesPage() {
   return (
     <main className="min-h-screen bg-background">
       {/* Header */}
-      <section className="px-6 pb-8 pt-8 lg:px-12 lg:pb-10 lg:pt-12 xl:px-16">
-        <div className="mx-auto max-w-7xl">
+      <section className="relative overflow-hidden px-6 pb-8 pt-8 lg:px-12 lg:pb-10 lg:pt-12 xl:px-16">
+        {/* Ambient glow accent */}
+        <div
+          className="pointer-events-none absolute -left-24 -top-24 h-72 w-72 rounded-full bg-primary/10 blur-3xl"
+          aria-hidden="true"
+        />
+
+        <div className="relative mx-auto max-w-7xl">
           <div className="max-w-2xl">
             <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-primary/15 bg-card px-3 py-1.5 text-xs font-medium tracking-wide text-primary shadow-sm">
               <MapPin className="size-3.5" />
               Explore RentNest
             </div>
 
-            <h1 className="whitespace-nowrap font-serif text-4xl leading-[0.98] tracking-[-0.045em] text-foreground sm:text-5xl lg:text-6xl">
+            <h1 className="font-serif text-4xl leading-[0.98] tracking-[-0.045em] text-foreground sm:text-5xl lg:text-6xl">
               Find a place that feels like{" "}
               <span className="text-primary">home.</span>
             </h1>
@@ -59,7 +67,7 @@ export default function PropertiesPage() {
         <div className="mx-auto max-w-7xl">
           <form
             onSubmit={(e) => e.preventDefault()}
-            className="rounded-2xl border border-border bg-card p-4 shadow-[0_16px_50px_-22px_hsl(var(--primary)/0.35)]"
+            className="rounded-2xl border border-border bg-card p-5 shadow-[0_16px_50px_-22px_hsl(var(--primary)/0.35)]"
           >
             <div className="grid gap-4 md:grid-cols-[1.3fr_1fr_1fr_1fr_auto] md:items-end">
               {/* Search */}
@@ -140,7 +148,7 @@ export default function PropertiesPage() {
                 </Select>
               </div>
 
-              <Button type="submit" size="lg" className="h-11 rounded-full px-6">
+              <Button type="submit" size="lg" className="h-11 rounded-full px-6 shadow-sm">
                 <Search data-icon="inline-start" />
                 Search
               </Button>
@@ -183,7 +191,7 @@ export default function PropertiesPage() {
       {/* Results */}
       <section className="px-6 pb-16 lg:px-12 lg:pb-24 xl:px-16">
         <div className="mx-auto max-w-7xl">
-          <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <div className="mb-7 flex flex-col gap-4 border-b border-border pb-6 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <p className="text-sm font-medium uppercase tracking-[0.18em] text-primary">
                 Available Homes
@@ -192,7 +200,8 @@ export default function PropertiesPage() {
                 Explore Properties
               </h2>
               <p className="mt-2 text-sm text-muted-foreground">
-                {total} {total === 1 ? "property" : "properties"} available
+                <span className="font-semibold text-foreground">{total}</span>{" "}
+                {total === 1 ? "property" : "properties"} available
               </p>
             </div>
 
@@ -204,8 +213,8 @@ export default function PropertiesPage() {
                   update({ sortBy, sortOrder })
                 }}
               >
-                <SelectTrigger className="h-10 w-full rounded-full border border-border bg-background px-4 text-sm shadow-sm transition-colors focus:border-primary focus:ring-1 focus:ring-primary">
-                  <ArrowDownUp className="mr-2 size-4" />
+                <SelectTrigger className="h-11! w-full rounded-full border border-border bg-background px-4 text-sm shadow-sm transition-colors focus:border-primary focus:ring-1 focus:ring-primary">
+                  <ArrowDownUp className="mr-2 size-4 text-primary/70" />
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent className="p-2">
@@ -219,7 +228,7 @@ export default function PropertiesPage() {
               <Button
                 variant="outline"
                 size="icon"
-                className="size-10"
+                className="size-11 shrink-0 rounded-full border-primary/20 text-primary hover:bg-primary hover:text-primary-foreground"
                 onClick={handleReset}
                 title="Reset filters"
               >
@@ -231,7 +240,10 @@ export default function PropertiesPage() {
           {loading ? (
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {Array.from({ length: 8 }).map((_, i) => (
-                <div key={i} className="h-90 animate-pulse rounded-2xl bg-muted" />
+                <div
+                  key={i}
+                  className="h-90 animate-pulse rounded-2xl bg-muted"
+                />
               ))}
             </div>
           ) : properties.length > 0 ? (
@@ -241,38 +253,58 @@ export default function PropertiesPage() {
               ))}
             </div>
           ) : (
-            <div className="flex min-h-80 flex-col items-center justify-center rounded-3xl border border-dashed border-border bg-card/40 px-6 text-center">
-              <div className="flex size-14 items-center justify-center rounded-2xl bg-primary/10 text-primary">
-                <BedDouble className="size-6" />
+            <div className="relative flex min-h-80 flex-col items-center justify-center overflow-hidden rounded-3xl border border-dashed border-border bg-card/40 px-6 text-center">
+              <div
+                className="pointer-events-none absolute -top-10 left-1/2 h-56 w-56 -translate-x-1/2 rounded-full bg-primary/10 blur-3xl"
+                aria-hidden="true"
+              />
+
+              <div className="relative flex size-16 items-center justify-center rounded-full bg-primary/10 text-primary ring-1 ring-primary/15">
+                <BedDouble className="size-7" />
               </div>
-              <h3 className="mt-5 text-xl font-semibold">No properties found</h3>
-              <p className="mt-2 max-w-md text-sm leading-6 text-muted-foreground">
-                We couldn&apos;t find any properties matching your current filters. Try changing your search criteria.
+              <h3 className="relative mt-5 font-serif text-xl tracking-tight text-foreground">
+                No properties found
+              </h3>
+              <p className="relative mt-2 max-w-md text-sm leading-6 text-muted-foreground">
+                We couldn&apos;t find any properties matching your current
+                filters. Try changing your search criteria.
               </p>
-              <Button variant="outline" className="mt-5" onClick={handleReset}>
+              <Button
+                variant="outline"
+                className="relative mt-5 rounded-full border-primary/20 px-5 text-primary hover:bg-primary hover:text-primary-foreground"
+                onClick={handleReset}
+              >
                 Clear filters
               </Button>
             </div>
           )}
 
           {!loading && totalPages > 1 && (
-            <div className="mt-10 flex items-center justify-center gap-2">
+            <div className="mt-10 flex items-center justify-center gap-3">
               <Button
                 variant="outline"
+                size="icon"
+                className="size-10 rounded-full border-primary/20 text-primary hover:bg-primary hover:text-primary-foreground disabled:opacity-40"
                 disabled={filters.page === 1}
                 onClick={() => update({ page: filters.page - 1 })}
+                aria-label="Previous page"
               >
-                Previous
+                <ChevronLeft className="size-4" />
               </Button>
-              <div className="flex h-10 items-center rounded-lg border border-border bg-card px-4 text-sm">
+
+              <div className="flex h-10 items-center rounded-full border border-border bg-card px-5 text-sm font-medium text-foreground shadow-sm">
                 Page {filters.page} of {totalPages}
               </div>
+
               <Button
                 variant="outline"
+                size="icon"
+                className="size-10 rounded-full border-primary/20 text-primary hover:bg-primary hover:text-primary-foreground disabled:opacity-40"
                 disabled={filters.page === totalPages}
                 onClick={() => update({ page: filters.page + 1 })}
+                aria-label="Next page"
               >
-                Next
+                <ChevronRight className="size-4" />
               </Button>
             </div>
           )}
