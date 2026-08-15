@@ -3,8 +3,13 @@
 import { LoginState, RegisterState } from "@/lib/types";
 import { loginSchema, registerSchema } from "@/lib/validations/auth";
 import { cookies } from "next/headers";
+import jwt, { JwtPayload } from "jsonwebtoken"
+import { redirect } from "next/navigation";
 
-export const loginAction = async (prevState: LoginState, formData: FormData) => {
+
+const API = process.env.BACKEND_API_URL;
+
+export const loginAction = async (redirectTo: string, prevState: LoginState, formData: FormData) => {
     const validation = loginSchema.safeParse({
         email: formData.get("email"),
         password: formData.get("password"),
@@ -24,7 +29,7 @@ export const loginAction = async (prevState: LoginState, formData: FormData) => 
         password,
     };
 
-    const res = await fetch(`${process.env.BACKEND_API_URL}/api/auth/login`,
+    const res = await fetch(`${API}/api/auth/login`,
         {
             method: "POST",
             headers: {
@@ -58,6 +63,23 @@ export const loginAction = async (prevState: LoginState, formData: FormData) => 
                 sameSite: "lax",
             }
         );
+
+        const decodedToken = jwt.decode(result.data.accessToken) as JwtPayload;
+        if (redirectTo && typeof redirectTo === "string" && redirectTo.startsWith("/") && !redirectTo.startsWith("//")) {
+            redirect(redirectTo)
+        }
+
+        if (decodedToken.role === "TENANT") {
+            redirect("/dashboard", "replace");
+        }
+        else if (decodedToken.role === "ADMIN") {
+            redirect("/admin-dashboard", "replace");
+        }
+        else if (decodedToken.role === "LANDLORD") {
+            redirect("/landlord-dashboard", "replace");
+        }
+
+        redirect("/dashboard", "replace");
     }
 
     return result;
@@ -87,7 +109,7 @@ export const registerAction = async (prevState: RegisterState, formData: FormDat
 
     // Only send validated data to backend
     const res = await fetch(
-        `${process.env.BACKEND_API_URL}/api/auth/register`,
+        `${API}/api/auth/register`,
         {
             method: "POST",
             headers: {
@@ -98,6 +120,10 @@ export const registerAction = async (prevState: RegisterState, formData: FormDat
     );
 
     const result = await res.json();
+
+    if(result.success) {
+        redirect("/login", "replace");
+    }
 
     return result;
 };
