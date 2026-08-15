@@ -48,6 +48,40 @@ export type RegisterState = {
     }
 }
 
+export type Review = {
+    id: string,
+    rating: number,
+    comment: string,
+    propertyId: string,
+    tenantId: string,
+    createdAt: string,
+    updatedAt: string,
+
+    tenant: {
+        id: string,
+        name: string,
+        email: string,
+        role: string,
+        status: string,
+        phone: string | null,
+        address: string | null,
+        photoUrl: string | null,
+        createdAt: string,
+        updatedAt: string
+    }
+}
+
+export type ReviewState = {
+    success: boolean,
+    statusCode: number,
+    message: string,
+    data: {
+        averageRating: number,
+        total: number,
+        reviews: Review[]
+    }
+}
+
 export type Property = {
     id: string,
     title: string,
@@ -84,8 +118,11 @@ export type Property = {
         updatedAt: string
     },
 
+    reviews: Review[],
+
     _count: {
-        reviews: number
+        reviews: number,
+        rentalRequests: number
     }
 }
 
@@ -100,6 +137,13 @@ export type PropertyState = {
         total: number,
         totalPages: number
     }
+}
+
+export type PropertyDetailState = {
+    success: boolean,
+    statusCode: number,
+    message: string,
+    data: Property
 }
 
 export type Category = {
