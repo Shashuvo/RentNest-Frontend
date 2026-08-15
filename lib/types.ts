@@ -101,3 +101,29 @@ export type PropertyState = {
         totalPages: number
     }
 }
+
+export type Category = {
+    id: string
+    name: string
+    createdAt: string
+}
+
+export type CategoryState = {
+    success: boolean
+    statusCode: number
+    message: string
+    data: Category[]
+}
+
+export type GetPropertiesParams = {
+    page?: number
+    limit?: number
+    sortBy?: string
+    sortOrder?: string
+    searchTerm?: string
+    city?: string
+    categoryId?: string
+    bedrooms?: string
+    minPrice?: string
+    maxPrice?: string
+}

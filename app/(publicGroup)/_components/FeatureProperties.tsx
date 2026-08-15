@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight} from "lucide-react";
 import PropertyCard from "./PropertyCard";
 import { Property, PropertyState } from "@/lib/types";
-import { getAllProperties } from "../_actions/propetyAction";
+import { getAllProperties } from "../_actions/propertyAction";
 import Link from "next/link";
 
 
