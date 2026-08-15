@@ -34,7 +34,7 @@ export default function Page() {
     }
 
     return (
-        <main className="min-h-screen overflow-hidden bg-background">
+        <div>
             <section id="top" className="grid w-full gap-8 px-6 pb-12 pt-6 lg:grid-cols-[1.4fr_0.94fr] lg:items-center lg:px-12 lg:pb-16 lg:pt-10 xl:px-16">
                 <div className="relative z-10 flex flex-col items-start">
                     <div className="mb-7 inline-flex items-center gap-2 rounded-full border border-primary/15 bg-card px-3 py-1.5 text-xs font-medium tracking-wide text-primary shadow-sm">
@@ -88,7 +88,7 @@ export default function Page() {
                     <div className="absolute -right-16 top-12 h-72 w-72 rounded-full bg-accent/20 blur-3xl" aria-hidden="true" />
                     <div className="relative h-full overflow-hidden rounded-[2rem] bg-muted shadow-2xl shadow-primary/10">
                         <Image src="/modern-rental-home.png" alt="Modern townhouse with a leafy courtyard" fill priority className="object-cover" sizes="(max-width: 1024px) 100vw, 52vw" />
-                        <div className="absolute inset-0 bg-gradient-to-t from-foreground/60 via-transparent to-transparent" />
+                        <div className="absolute inset-0 bg-linear-to-t from-foreground/60 via-transparent to-transparent" />
                         <div className="absolute bottom-5 left-5 right-5 flex items-end justify-between rounded-2xl border border-background/20 bg-foreground/35 p-4 text-background backdrop-blur-md">
                             <div>
                                 <p className="text-xs font-medium uppercase tracking-[0.18em] text-background/70">Featured this week</p>
@@ -105,6 +105,6 @@ export default function Page() {
                 </div>
             </section>
 
-        </main>
+        </div>
     )
 }

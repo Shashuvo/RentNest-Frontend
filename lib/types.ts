@@ -47,3 +47,57 @@ export type RegisterState = {
         updatedAt: string
     }
 }
+
+export type Property = {
+    id: string,
+    title: string,
+    description: string,
+    address: string,
+    city: string,
+    area: number | null,
+    price: number,
+    bedrooms: number,
+    bathrooms: number,
+    images: string[],
+    isAvailable: boolean,
+    landlordId: string,
+    categoryId: string,
+    createdAt: string,
+    updatedAt: string,
+
+    category: {
+        id: string,
+        name: string,
+        createdAt: string
+    },
+
+    landlord: {
+        id: string,
+        name: string,
+        email: string,
+        role: string,
+        status: string,
+        phone: string | null,
+        address: string | null,
+        photoUrl: string | null,
+        createdAt: string,
+        updatedAt: string
+    },
+
+    _count: {
+        reviews: number
+    }
+}
+
+export type PropertyState = {
+    success: boolean,
+    statusCode: number,
+    message: string,
+    data: Property[],
+    meta: {
+        page: number,
+        limit: number,
+        total: number,
+        totalPages: number
+    }
+}
