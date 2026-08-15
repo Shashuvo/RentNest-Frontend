@@ -41,7 +41,7 @@ export default function PropertiesPage() {
               Explore RentNest
             </div>
 
-            <h1 className="font-serif text-4xl leading-[0.98] tracking-[-0.045em] text-foreground sm:text-5xl lg:text-6xl">
+            <h1 className="whitespace-nowrap font-serif text-4xl leading-[0.98] tracking-[-0.045em] text-foreground sm:text-5xl lg:text-6xl">
               Find a place that feels like{" "}
               <span className="text-primary">home.</span>
             </h1>
