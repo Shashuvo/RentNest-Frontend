@@ -53,6 +53,7 @@ export default function RentalRequestActions({
             <div className="flex flex-col gap-2 sm:flex-row">
                 <Button
                     size="sm"
+                    className="rounded-full"
                     onClick={() =>
                         handleStatusUpdate("APPROVED")
                     }
@@ -70,6 +71,7 @@ export default function RentalRequestActions({
                 <Button
                     size="sm"
                     variant="destructive"
+                    className="rounded-full"
                     onClick={() =>
                         handleStatusUpdate("REJECTED")
                     }
@@ -91,6 +93,7 @@ export default function RentalRequestActions({
         return (
             <Button
                 size="sm"
+                className="rounded-full"
                 onClick={() =>
                     handleStatusUpdate("COMPLETED")
                 }

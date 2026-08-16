@@ -6,8 +6,7 @@ import { getNewAccessToken } from './service/refreshToken';
 import { JwtPayload } from 'jsonwebtoken';
 
 const AUTH_ROUTES = ["/login", "/register"];
-// const PUBLIC_ROUTES = ["/", "/news", "/login", "/register"]
-const PUBLIC_ROUTES = ["/", "/properties", "/properties/id"]
+const PUBLIC_ROUTES = ["/", "/properties", "/works", "/about",]
 
 // This function can be marked `async` if using `await` inside
 export async function proxy(request: NextRequest) {
@@ -43,7 +42,7 @@ export async function proxy(request: NextRequest) {
     if (!decodedAccessToken?.success) {
         //token has expired or is invalid, clear the cookies
         cookieStore.delete("accessToken");
-        // return NextResponse.redirect(new URL('/login', request.url));
+        accessToken = undefined;
     }
 
     if (decodedAccessToken?.success && decodedAccessToken.data) {

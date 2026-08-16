@@ -321,19 +321,19 @@ export default function DashboardPage() {
                                                 <span
                                                     className={`rounded-full px-3 py-1 text-xs font-medium ${request.status ===
                                                         "PENDING"
-                                                        ? "bg-yellow-100 text-yellow-700"
+                                                        ? "border-2 border-yellow-600 bg-white text-yellow-700"
                                                         : request.status ===
                                                             "APPROVED"
-                                                            ? "bg-blue-100 text-blue-700"
+                                                            ? "border-2 border-blue-600 bg-white text-blue-700"
                                                             : request.status ===
                                                                 "ACTIVE"
-                                                                ? "bg-green-100 text-green-700"
+                                                                ? "border-2 border-green-600 bg-white text-green-700"
                                                                 : request.status ===
                                                                     "COMPLETED"
-                                                                    ? "bg-purple-100 text-purple-700"
+                                                                    ? "border-2 border-primary/80 bg-white text-primary"
                                                                     : request.status ===
                                                                         "REJECTED"
-                                                                        ? "bg-red-100 text-red-700"
+                                                                        ? "border-2 border-red-600 bg-white text-red-700"
                                                                         : "bg-muted text-muted-foreground"
                                                         }`}
                                                 >

@@ -3,8 +3,9 @@ import {
     ArrowLeft,
     CalendarDays,
     CheckCircle2,
+    Clock3,
     CreditCard,
-    Home,
+    Hash,
     MapPin,
     Receipt,
 } from "lucide-react";
@@ -12,8 +13,8 @@ import { notFound } from "next/navigation";
 
 import { getPaymentById } from "../../_actions/paymentAction";
 import PayNowButton from "@/app/(dashboardGroup)/_components/tenant/PayNowButton";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { PropertyImageCarousel } from "@/app/(dashboardGroup)/_components/shared/PropertyImageCarousel";
 
 type PaymentDetailPageProps = {
     params: Promise<{
@@ -21,20 +22,23 @@ type PaymentDetailPageProps = {
     }>;
 };
 
-const getStatusVariant = (status: string) => {
+const getStatusClasses = (status: string) => {
     switch (status) {
         case "COMPLETED":
-            return "default" as const;
+        case "APPROVED":
+        case "ACTIVE":
+            return "bg-green-100 text-green-700";
 
         case "PENDING":
-            return "secondary" as const;
+            return "bg-yellow-100 text-yellow-700";
 
         case "FAILED":
         case "CANCELLED":
-            return "destructive" as const;
+        case "REJECTED":
+            return "bg-red-100 text-red-700";
 
         default:
-            return "outline" as const;
+            return "bg-muted text-muted-foreground";
     }
 };
 
@@ -60,7 +64,7 @@ export default async function PaymentDetailPage({
             <Button
                 asChild
                 variant="ghost"
-                className="mb-6 -ml-3"
+                className="mb-6 -ml-3 rounded-full"
             >
                 <Link href="/payment">
                     <ArrowLeft className="mr-2 h-4 w-4" />
@@ -68,31 +72,52 @@ export default async function PaymentDetailPage({
                 </Link>
             </Button>
 
-            <div className="grid gap-6 lg:grid-cols-[1fr_380px]">
+            {/* Header */}
+            <div className="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
+                <div className="flex items-center gap-4">
+                    <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary ring-4 ring-primary/5">
+                        <Receipt className="size-5" />
+                    </span>
+
+                    <div>
+                        <h1 className="font-serif text-3xl tracking-tight">
+                            Payment Details
+                        </h1>
+
+                        <p className="mt-1.5 text-sm text-muted-foreground">
+                            Review the payment and rental details for this
+                            transaction.
+                        </p>
+                    </div>
+                </div>
+
+                <span
+                    className={`w-fit rounded-full px-3 py-1.5 text-xs font-medium ${getStatusClasses(
+                        payment.status
+                    )}`}
+                >
+                    {payment.status}
+                </span>
+            </div>
+
+            <div className="grid gap-6 lg:grid-cols-3">
                 {/* Main */}
-                <div className="space-y-6">
+                <div className="space-y-6 lg:col-span-2">
                     {/* Property */}
-                    <div className="overflow-hidden rounded-2xl border bg-card">
-                        <div className="relative aspect-[16/7] overflow-hidden bg-muted">
-                            {property.images?.[0] ? (
-                                <img
-                                    src={property.images[0]}
-                                    alt={property.title}
-                                    className="h-full w-full object-cover"
-                                />
-                            ) : (
-                                <div className="flex h-full items-center justify-center">
-                                    <Home className="h-10 w-10 text-muted-foreground" />
-                                </div>
-                            )}
+                    <div className="group relative overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition-shadow hover:shadow-[0_20px_45px_-20px_hsl(var(--primary)/0.35)]">
+                        <div className="relative aspect-16/7 overflow-hidden bg-muted">
+                            <PropertyImageCarousel
+                                images={property.images ?? []}
+                                alt={property.title}
+                            />
                         </div>
 
                         <div className="p-6">
                             <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                                 <div>
-                                    <h1 className="text-2xl font-semibold tracking-tight">
+                                    <h2 className="font-serif text-xl tracking-tight">
                                         {property.title}
-                                    </h1>
+                                    </h2>
 
                                     <p className="mt-2 flex items-center gap-1.5 text-sm text-muted-foreground">
                                         <MapPin className="h-4 w-4" />
@@ -101,164 +126,200 @@ export default async function PaymentDetailPage({
                                     </p>
                                 </div>
 
-                                <Badge
-                                    variant={getStatusVariant(
-                                        payment.status
-                                    )}
-                                >
-                                    {payment.status}
-                                </Badge>
+                                <div className="rounded-full border border-primary/15 bg-card px-3 py-1.5 text-sm shadow-sm">
+                                    <span className="font-serif">
+                                        ৳{property.price.toLocaleString()}
+                                    </span>
+                                    <span className="text-muted-foreground">
+                                        {" "}/mo
+                                    </span>
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    {/* Payment Information */}
-                    <div className="rounded-2xl border bg-card p-6">
-                        <div className="mb-5 flex items-center gap-2">
-                            <Receipt className="h-5 w-5 text-primary" />
+                    {/* Payment stat tiles */}
+                    <section className="space-y-3">
+                        <h3 className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+                            Payment Summary
+                        </h3>
 
-                            <h2 className="font-semibold">
-                                Payment Information
-                            </h2>
-                        </div>
+                        <div className="grid gap-4 sm:grid-cols-3">
+                            <div className="relative overflow-hidden rounded-2xl border border-border bg-card p-5 shadow-sm">
+                                <div className="flex items-center gap-3">
+                                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary ring-4 ring-primary/10">
+                                        <Receipt className="h-5 w-5" />
+                                    </div>
 
-                        <div className="grid gap-5 sm:grid-cols-2">
-                            <div>
-                                <p className="text-xs text-muted-foreground">
-                                    Amount
-                                </p>
+                                    <div>
+                                        <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+                                            Amount
+                                        </p>
 
-                                <p className="mt-1 text-lg font-semibold">
-                                    $
-                                    {payment.amount.toLocaleString()}
-                                </p>
-                            </div>
-
-                            <div>
-                                <p className="text-xs text-muted-foreground">
-                                    Payment Status
-                                </p>
-
-                                <div className="mt-1">
-                                    <Badge
-                                        variant={getStatusVariant(
-                                            payment.status
-                                        )}
-                                    >
-                                        {payment.status}
-                                    </Badge>
+                                        <p className="mt-1 font-serif text-xl">
+                                            ৳{payment.amount.toLocaleString()}
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
 
-                            <div>
-                                <p className="text-xs text-muted-foreground">
-                                    Created
-                                </p>
+                            <div className="relative overflow-hidden rounded-2xl border border-border bg-card p-5 shadow-sm">
+                                <div className="flex items-center gap-3">
+                                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-yellow-500/10 text-yellow-600 ring-4 ring-yellow-500/10">
+                                        <CalendarDays className="h-5 w-5" />
+                                    </div>
 
-                                <p className="mt-1 flex items-center gap-2 text-sm">
-                                    <CalendarDays className="h-4 w-4 text-muted-foreground" />
-                                    {new Date(
-                                        payment.createdAt
-                                    ).toLocaleDateString()}
-                                </p>
+                                    <div>
+                                        <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+                                            Created
+                                        </p>
+
+                                        <p className="mt-1 font-serif text-xl">
+                                            {new Date(
+                                                payment.createdAt
+                                            ).toLocaleDateString()}
+                                        </p>
+                                    </div>
+                                </div>
                             </div>
 
-                            <div>
-                                <p className="text-xs text-muted-foreground">
-                                    Paid At
-                                </p>
+                            <div className="relative overflow-hidden rounded-2xl border border-border bg-card p-5 shadow-sm">
+                                <div className="flex items-center gap-3">
+                                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-green-500/10 text-green-600 ring-4 ring-green-500/10">
+                                        <CheckCircle2 className="h-5 w-5" />
+                                    </div>
 
-                                <p className="mt-1 text-sm">
-                                    {payment.paidAt
-                                        ? new Date(
-                                              payment.paidAt
-                                          ).toLocaleDateString()
-                                        : "Not paid yet"}
-                                </p>
+                                    <div>
+                                        <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+                                            Paid At
+                                        </p>
+
+                                        <p className="mt-1 font-serif text-xl">
+                                            {payment.paidAt
+                                                ? new Date(
+                                                    payment.paidAt
+                                                ).toLocaleDateString()
+                                                : "—"}
+                                        </p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
                         {payment.transactionId && (
-                            <div className="mt-5 border-t pt-5">
-                                <p className="text-xs text-muted-foreground">
-                                    Transaction ID
+                            <div className="flex items-center gap-3 rounded-full border border-border bg-card px-4 py-2.5 shadow-sm">
+                                <Hash className="h-4 w-4 shrink-0 text-muted-foreground" />
+
+                                <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+                                    Transaction
                                 </p>
 
-                                <p className="mt-1 break-all font-mono text-xs">
+                                <p className="truncate break-all font-mono text-xs text-foreground">
                                     {payment.transactionId}
                                 </p>
                             </div>
                         )}
-                    </div>
+                    </section>
 
-                    {/* Rental Information */}
-                    <div className="rounded-2xl border bg-card p-6">
-                        <h2 className="mb-5 font-semibold">
-                            Rental Information
-                        </h2>
+                    {/* Rental stat tiles */}
+                    <section className="space-y-3">
+                        <h3 className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+                            Rental Summary
+                        </h3>
 
-                        <div className="grid gap-5 sm:grid-cols-2">
-                            <div>
-                                <p className="text-xs text-muted-foreground">
-                                    Rental Request
-                                </p>
+                        <div className="grid gap-4 sm:grid-cols-3">
+                            <div className="relative overflow-hidden rounded-2xl border border-border bg-card p-5 shadow-sm">
+                                <div className="flex items-center gap-3">
+                                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary ring-4 ring-primary/10">
+                                        <Clock3 className="h-5 w-5" />
+                                    </div>
 
-                                <p className="mt-1 font-mono text-xs">
-                                    {payment.rentalRequest.id}
-                                </p>
+                                    <div>
+                                        <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+                                            Request Status
+                                        </p>
+
+                                        <span
+                                            className={`mt-1 inline-block rounded-full px-2.5 py-0.5 text-xs font-medium ${getStatusClasses(
+                                                payment.rentalRequest.status
+                                            )}`}
+                                        >
+                                            {payment.rentalRequest.status}
+                                        </span>
+                                    </div>
+                                </div>
                             </div>
 
-                            <div>
-                                <p className="text-xs text-muted-foreground">
-                                    Request Status
-                                </p>
+                            <div className="relative overflow-hidden rounded-2xl border border-border bg-card p-5 shadow-sm">
+                                <div className="flex items-center gap-3">
+                                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary ring-4 ring-primary/10">
+                                        <CalendarDays className="h-5 w-5" />
+                                    </div>
 
-                                <Badge
-                                    variant="outline"
-                                    className="mt-1"
-                                >
-                                    {payment.rentalRequest.status}
-                                </Badge>
+                                    <div>
+                                        <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+                                            Move-in
+                                        </p>
+
+                                        <p className="mt-1 font-serif text-lg">
+                                            {payment.rentalRequest.moveInDate
+                                                ? new Date(
+                                                    payment.rentalRequest.moveInDate
+                                                ).toLocaleDateString()
+                                                : "Not specified"}
+                                        </p>
+                                    </div>
+                                </div>
                             </div>
 
-                            <div>
-                                <p className="text-xs text-muted-foreground">
-                                    Preferred Move-in
-                                </p>
+                            <div className="relative overflow-hidden rounded-2xl border border-border bg-card p-5 shadow-sm">
+                                <div className="flex items-center gap-3">
+                                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary ring-4 ring-primary/10">
+                                        <Receipt className="h-5 w-5" />
+                                    </div>
 
-                                <p className="mt-1 text-sm">
-                                    {payment.rentalRequest.moveInDate
-                                        ? new Date(
-                                              payment.rentalRequest.moveInDate
-                                          ).toLocaleDateString()
-                                        : "Not specified"}
-                                </p>
-                            </div>
+                                    <div>
+                                        <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+                                            Monthly Rent
+                                        </p>
 
-                            <div>
-                                <p className="text-xs text-muted-foreground">
-                                    Monthly Rent
-                                </p>
-
-                                <p className="mt-1 text-sm font-medium">
-                                    $
-                                    {property.price.toLocaleString()}
-                                </p>
+                                        <p className="mt-1 font-serif text-lg">
+                                            ৳{property.price.toLocaleString()}
+                                        </p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
+
+                        <div className="flex items-center gap-3 rounded-full border border-border bg-card px-4 py-2.5 shadow-sm">
+                            <Hash className="h-4 w-4 shrink-0 text-muted-foreground" />
+
+                            <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+                                Request ID
+                            </p>
+
+                            <p className="truncate font-mono text-xs text-foreground">
+                                {payment.rentalRequest.id}
+                            </p>
+                        </div>
+                    </section>
                 </div>
 
                 {/* Sidebar */}
                 <div className="lg:sticky lg:top-8 lg:self-start">
-                    <div className="rounded-2xl border bg-card p-6 shadow-sm">
+                    <div className="relative overflow-hidden rounded-3xl border border-border bg-card p-6 shadow-[0_24px_70px_-28px_hsl(var(--primary)/0.35)]">
+                        <div
+                            className="pointer-events-none absolute -right-14 -top-14 h-40 w-40 rounded-full bg-primary/10 blur-3xl"
+                            aria-hidden="true"
+                        />
+
                         {payment.status === "COMPLETED" ? (
-                            <div className="text-center">
-                                <div className="mx-auto flex size-14 items-center justify-center rounded-full bg-primary/10">
-                                    <CheckCircle2 className="size-7 text-primary" />
+                            <div className="relative text-center">
+                                <div className="mx-auto flex size-14 items-center justify-center rounded-full bg-primary/10 text-primary ring-4 ring-primary/10">
+                                    <CheckCircle2 className="size-7" />
                                 </div>
 
-                                <h2 className="mt-4 text-lg font-semibold">
+                                <h2 className="mt-4 font-serif text-lg tracking-tight">
                                     Payment Completed
                                 </h2>
 
@@ -266,12 +327,24 @@ export default async function PaymentDetailPage({
                                     Your payment for this rental has
                                     been successfully completed.
                                 </p>
+
+                                <div className="mt-5 rounded-2xl border border-dashed border-border bg-background/60 p-4">
+                                    <div className="flex items-center justify-between text-sm">
+                                        <span className="text-muted-foreground">
+                                            Paid
+                                        </span>
+
+                                        <span className="font-serif text-lg">
+                                            ৳{payment.amount.toLocaleString()}
+                                        </span>
+                                    </div>
+                                </div>
                             </div>
                         ) : (
-                            <>
+                            <div className="relative">
                                 <div className="flex items-center gap-3">
-                                    <div className="flex size-11 items-center justify-center rounded-xl bg-primary/10">
-                                        <CreditCard className="size-5 text-primary" />
+                                    <div className="flex size-11 items-center justify-center rounded-full bg-primary/10 text-primary ring-4 ring-primary/10">
+                                        <CreditCard className="size-5" />
                                     </div>
 
                                     <div>
@@ -285,17 +358,16 @@ export default async function PaymentDetailPage({
                                     </div>
                                 </div>
 
-                                <div className="my-5 border-t" />
+                                <div className="my-5 rounded-2xl border border-dashed border-border bg-background/60 p-4">
+                                    <div className="flex items-center justify-between text-sm">
+                                        <span className="text-muted-foreground">
+                                            Total due
+                                        </span>
 
-                                <div className="flex items-center justify-between">
-                                    <span className="text-sm text-muted-foreground">
-                                        Total
-                                    </span>
-
-                                    <span className="text-xl font-semibold">
-                                        $
-                                        {payment.amount.toLocaleString()}
-                                    </span>
+                                        <span className="font-serif text-xl">
+                                            ৳{payment.amount.toLocaleString()}
+                                        </span>
+                                    </div>
                                 </div>
 
                                 <PayNowButton
@@ -310,12 +382,12 @@ export default async function PaymentDetailPage({
 
                                 {payment.rentalRequest.status !==
                                     "APPROVED" && (
-                                    <p className="mt-3 text-center text-xs text-muted-foreground">
-                                        Payment is available only after
-                                        your rental request is approved.
-                                    </p>
-                                )}
-                            </>
+                                        <p className="mt-3 text-center text-xs text-muted-foreground">
+                                            Payment is available only after
+                                            your rental request is approved.
+                                        </p>
+                                    )}
+                            </div>
                         )}
                     </div>
                 </div>

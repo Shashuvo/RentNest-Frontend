@@ -107,14 +107,11 @@ export default function PropertyCard({ property }: PropertyCardProps) {
                         <div className="absolute left-3 top-3 z-10">
                             <span
                                 className={`flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium shadow-sm backdrop-blur-md ${property.isAvailable
-                                    ? "bg-emerald-500/90 text-white"
-                                    : "bg-black/50 text-white"
+                                    ? "bg-[oklch(0.65_0.15_155)] text-white"
+                                    : "bg-primary text-white"
                                     }`}
                             >
-                                <span
-                                    className={`h-1.5 w-1.5 rounded-full ${property.isAvailable ? "bg-white" : "bg-white/60"
-                                        }`}
-                                />
+                                <span className="h-1.5 w-1.5 rounded-full bg-white" />
                                 {property.isAvailable ? "Available" : "Not Available"}
                             </span>
                         </div>

@@ -10,14 +10,20 @@ export default async function ProfilePage() {
     if (!result.success) {
         return (
             <div className="mx-auto w-full max-w-3xl p-6">
-                <div className="mb-8">
-                    <h1 className="font-serif text-3xl tracking-tight">
-                        Profile
-                    </h1>
+                <div className="mb-8 flex items-center gap-4">
+                    <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary ring-4 ring-primary/5">
+                        <UserRound className="size-5" />
+                    </span>
 
-                    <p className="mt-1.5 text-sm text-muted-foreground">
-                        Manage your personal information and account details.
-                    </p>
+                    <div>
+                        <h1 className="font-serif text-3xl tracking-tight text-foreground">
+                            Profile
+                        </h1>
+
+                        <p className="mt-1 text-sm text-muted-foreground">
+                            Manage your personal information and account details.
+                        </p>
+                    </div>
                 </div>
 
                 <div className="relative flex min-h-64 flex-col items-center justify-center overflow-hidden rounded-3xl border border-dashed border-border bg-card/40 px-6 text-center">
@@ -40,7 +46,7 @@ export default async function ProfilePage() {
 
                     <a
                         href="/profile"
-                        className="relative mt-5 inline-flex h-10 items-center rounded-full border border-primary/20 px-5 text-sm font-medium text-primary transition-colors hover:bg-primary hover:text-primary-foreground"
+                        className="relative mt-5 inline-flex h-10 items-center rounded-full border border-primary/20 px-5 text-sm font-medium text-primary shadow-sm transition-colors hover:bg-primary hover:text-primary-foreground"
                     >
                         Try again
                     </a>
@@ -55,17 +61,23 @@ export default async function ProfilePage() {
 
     return (
         <div className="mx-auto w-full max-w-3xl p-6">
-            <div className="mb-8">
-                <h1 className="font-serif text-3xl tracking-tight">
-                    Profile
-                </h1>
+            <div className="mb-8 flex items-center gap-4">
+                <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary ring-4 ring-primary/5">
+                    <UserRound className="size-5" />
+                </span>
 
-                <p className="mt-1.5 text-sm text-muted-foreground">
-                    Manage your personal information and account details.
-                </p>
+                <div>
+                    <h1 className="font-serif text-3xl tracking-tight text-foreground">
+                        Profile
+                    </h1>
+
+                    <p className="mt-1 text-sm text-muted-foreground">
+                        Manage your personal information and account details.
+                    </p>
+                </div>
             </div>
 
-            <div className="relative overflow-hidden rounded-2xl border bg-card p-6 shadow-sm sm:p-8">
+            <div className="relative overflow-hidden rounded-2xl border border-border bg-card p-6 shadow-sm sm:p-8">
                 <div
                     className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-primary/10 blur-3xl"
                     aria-hidden="true"

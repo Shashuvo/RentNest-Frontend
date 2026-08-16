@@ -1,13 +1,15 @@
 "use client";
 
+import { LayoutDashboard, LucideIcon, Plus } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
 
 interface DashboardHeaderProps {
     title: string;
     description?: string;
     actionLabel?: string;
     onAction?: () => void;
+    icon?: LucideIcon;
 }
 
 export function DashboardHeader({
@@ -15,19 +17,26 @@ export function DashboardHeader({
     description,
     actionLabel,
     onAction,
+    icon: Icon = LayoutDashboard,
 }: DashboardHeaderProps) {
     return (
         <div className="flex flex-col gap-4 border-b border-border pb-6 sm:flex-row sm:items-end sm:justify-between">
-            <div>
-                <h1 className="font-serif text-3xl tracking-tight text-foreground">
-                    {title}
-                </h1>
+            <div className="flex items-center gap-4">
+                <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary ring-4 ring-primary/5">
+                    <Icon className="size-5" />
+                </span>
 
-                {description && (
-                    <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
-                        {description}
-                    </p>
-                )}
+                <div>
+                    <h1 className="font-serif text-3xl tracking-tight text-foreground">
+                        {title}
+                    </h1>
+
+                    {description && (
+                        <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
+                            {description}
+                        </p>
+                    )}
+                </div>
             </div>
 
             {actionLabel && onAction && (

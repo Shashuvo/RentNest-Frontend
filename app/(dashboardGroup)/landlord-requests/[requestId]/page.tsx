@@ -1,22 +1,23 @@
 import Link from "next/link";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import {
     ArrowLeft,
     CalendarDays,
     CheckCircle2,
     Clock3,
-    Home,
+    FileText,
     MapPin,
     MessageSquare,
     User,
     XCircle,
 } from "lucide-react";
 
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
 import { getLandlordRequests } from "../../_actions/landlordRentalAction";
 import RentalRequestActions from "../../_components/landlord/RentalRequestActions";
+import { PropertyImageCarousel } from "@/app/(dashboardGroup)/_components/shared/PropertyImageCarousel";
 
 type LandlordRequestDetailsPageProps = {
     params: Promise<{
@@ -27,24 +28,28 @@ type LandlordRequestDetailsPageProps = {
 const getStatusConfig = (status: string) => {
     switch (status) {
         case "APPROVED":
-            return {
-                label: "APPROVED",
-                icon: CheckCircle2,
-                variant: "default" as const,
-            };
-
         case "ACTIVE":
             return {
-                label: "ACTIVE",
+                label: status,
                 icon: CheckCircle2,
-                variant: "default" as const,
+                classes:
+                    "border-2 border-green-600 bg-white text-green-700",
+            };
+
+        case "PENDING":
+            return {
+                label: "PENDING",
+                icon: Clock3,
+                classes:
+                    "border-2 border-yellow-600 bg-white text-yellow-700",
             };
 
         case "COMPLETED":
             return {
                 label: "COMPLETED",
                 icon: CheckCircle2,
-                variant: "secondary" as const,
+                classes:
+                    "border-2 border-primary/80 bg-white text-primary",
             };
 
         case "REJECTED":
@@ -52,14 +57,15 @@ const getStatusConfig = (status: string) => {
             return {
                 label: status,
                 icon: XCircle,
-                variant: "destructive" as const,
+                classes: "border border-red-200 bg-white text-red-700",
             };
 
         default:
             return {
-                label: "PENDING",
+                label: status,
                 icon: Clock3,
-                variant: "secondary" as const,
+                classes:
+                    "border border-border bg-white text-muted-foreground",
             };
     }
 };
@@ -89,7 +95,7 @@ export default async function LandlordRequestDetailsPage({
                 <Button
                     asChild
                     variant="ghost"
-                    className="-ml-3"
+                    className="-ml-3 rounded-full"
                 >
                     <Link href="/landlord-requests">
                         <ArrowLeft className="mr-2 h-4 w-4" />
@@ -98,23 +104,28 @@ export default async function LandlordRequestDetailsPage({
                 </Button>
 
                 <div className="mt-5 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
-                    <div>
-                        <h1 className="text-2xl font-semibold tracking-tight">
-                            Rental Request Details
-                        </h1>
+                    <div className="flex items-center gap-4">
+                        <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary ring-4 ring-primary/5">
+                            <FileText className="size-5" />
+                        </span>
 
-                        <p className="mt-1 text-sm text-muted-foreground">
-                            Review the tenant&apos;s rental request.
-                        </p>
+                        <div>
+                            <h1 className="font-serif text-3xl tracking-tight">
+                                Rental Request Details
+                            </h1>
+
+                            <p className="mt-1.5 text-sm text-muted-foreground">
+                                Review the tenant&apos;s rental request.
+                            </p>
+                        </div>
                     </div>
 
-                    <Badge
-                        variant={status.variant}
-                        className="w-fit gap-1.5 px-3 py-1.5"
+                    <span
+                        className={`inline-flex w-fit items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-medium shadow-sm ${status.classes}`}
                     >
                         <StatusIcon className="h-4 w-4" />
                         {status.label}
-                    </Badge>
+                    </span>
                 </div>
             </div>
 
@@ -122,25 +133,18 @@ export default async function LandlordRequestDetailsPage({
                 {/* Main Content */}
                 <div className="space-y-6 lg:col-span-2">
                     {/* Property */}
-                    <section className="overflow-hidden rounded-2xl border bg-card">
+                    <section className="overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
                         <div className="relative h-64 bg-muted sm:h-80">
-                            {request.property.images?.[0] ? (
-                                <img
-                                    src={request.property.images[0]}
-                                    alt={request.property.title}
-                                    className="h-full w-full object-cover"
-                                />
-                            ) : (
-                                <div className="flex h-full items-center justify-center">
-                                    <Home className="h-10 w-10 text-muted-foreground" />
-                                </div>
-                            )}
+                            <PropertyImageCarousel
+                                images={request.property.images ?? []}
+                                alt={request.property.title}
+                            />
                         </div>
 
                         <div className="p-6">
                             <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                                 <div>
-                                    <h2 className="text-xl font-semibold">
+                                    <h2 className="font-serif text-xl tracking-tight">
                                         {request.property.title}
                                     </h2>
 
@@ -161,15 +165,15 @@ export default async function LandlordRequestDetailsPage({
                                     </div>
                                 </div>
 
-                                <p className="text-lg font-semibold">
+                                <p className="font-serif text-lg">
                                     ৳{" "}
                                     {request.property.price.toLocaleString()}
                                 </p>
                             </div>
 
-                            <div className="mt-6 grid grid-cols-2 gap-4 border-y py-5 sm:grid-cols-4">
+                            <div className="mt-6 grid grid-cols-2 gap-4 border-y border-border py-5 sm:grid-cols-4">
                                 <div>
-                                    <p className="text-xs text-muted-foreground">
+                                    <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
                                         Category
                                     </p>
 
@@ -182,7 +186,7 @@ export default async function LandlordRequestDetailsPage({
                                 </div>
 
                                 <div>
-                                    <p className="text-xs text-muted-foreground">
+                                    <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
                                         Bedrooms
                                     </p>
 
@@ -192,7 +196,7 @@ export default async function LandlordRequestDetailsPage({
                                 </div>
 
                                 <div>
-                                    <p className="text-xs text-muted-foreground">
+                                    <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
                                         Bathrooms
                                     </p>
 
@@ -202,7 +206,7 @@ export default async function LandlordRequestDetailsPage({
                                 </div>
 
                                 <div>
-                                    <p className="text-xs text-muted-foreground">
+                                    <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
                                         Area
                                     </p>
 
@@ -227,14 +231,14 @@ export default async function LandlordRequestDetailsPage({
                     </section>
 
                     {/* Tenant */}
-                    <section className="rounded-2xl border bg-card p-6">
+                    <section className="rounded-2xl border border-border bg-card p-6 shadow-sm">
                         <div className="flex items-center gap-3">
-                            <div className="flex size-10 items-center justify-center rounded-xl bg-primary/10">
-                                <User className="size-5 text-primary" />
+                            <div className="flex size-10 items-center justify-center rounded-full bg-primary/10 text-primary ring-4 ring-primary/10">
+                                <User className="size-5" />
                             </div>
 
                             <div>
-                                <h2 className="font-semibold">
+                                <h2 className="font-serif text-lg tracking-tight">
                                     Tenant Information
                                 </h2>
 
@@ -246,20 +250,25 @@ export default async function LandlordRequestDetailsPage({
                         </div>
 
                         <div className="mt-6 flex flex-col gap-5 sm:flex-row sm:items-center">
-                            {request.tenant.photoUrl ? (
-                                <img
-                                    src={request.tenant.photoUrl}
-                                    alt={request.tenant.name}
-                                    className="size-16 rounded-full object-cover"
-                                />
-                            ) : (
-                                <div className="flex size-16 items-center justify-center rounded-full bg-muted">
-                                    <User className="size-7 text-muted-foreground" />
-                                </div>
-                            )}
+                            <div className="relative size-16 shrink-0 overflow-hidden rounded-full bg-primary/10 text-primary">
+                                {request.tenant.photoUrl ? (
+                                    <Image
+                                        src={request.tenant.photoUrl}
+                                        alt={request.tenant.name}
+                                        fill
+                                        sizes="64px"
+                                        loading="lazy"
+                                        className="object-cover"
+                                    />
+                                ) : (
+                                    <div className="flex h-full w-full items-center justify-center">
+                                        <User className="size-7" />
+                                    </div>
+                                )}
+                            </div>
 
                             <div>
-                                <h3 className="font-semibold">
+                                <h3 className="font-serif text-lg tracking-tight">
                                     {request.tenant.name}
                                 </h3>
 
@@ -275,9 +284,9 @@ export default async function LandlordRequestDetailsPage({
                             </div>
                         </div>
 
-                        <div className="mt-6 grid gap-5 border-t pt-5 sm:grid-cols-2">
+                        <div className="mt-6 grid gap-5 border-t border-border pt-5 sm:grid-cols-2">
                             <div>
-                                <p className="text-xs text-muted-foreground">
+                                <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
                                     Account Status
                                 </p>
 
@@ -287,7 +296,7 @@ export default async function LandlordRequestDetailsPage({
                             </div>
 
                             <div>
-                                <p className="text-xs text-muted-foreground">
+                                <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
                                     Address
                                 </p>
 
@@ -300,14 +309,14 @@ export default async function LandlordRequestDetailsPage({
                     </section>
 
                     {/* Request Information */}
-                    <section className="rounded-2xl border bg-card p-6">
+                    <section className="rounded-2xl border border-border bg-card p-6 shadow-sm">
                         <div className="flex items-center gap-3">
-                            <div className="flex size-10 items-center justify-center rounded-xl bg-primary/10">
-                                <MessageSquare className="size-5 text-primary" />
+                            <div className="flex size-10 items-center justify-center rounded-full bg-primary/10 text-primary ring-4 ring-primary/10">
+                                <MessageSquare className="size-5" />
                             </div>
 
                             <div>
-                                <h2 className="font-semibold">
+                                <h2 className="font-serif text-lg tracking-tight">
                                     Request Information
                                 </h2>
 
@@ -319,11 +328,11 @@ export default async function LandlordRequestDetailsPage({
 
                         <div className="mt-6 space-y-5">
                             <div>
-                                <p className="text-xs font-medium text-muted-foreground">
+                                <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
                                     Message
                                 </p>
 
-                                <div className="mt-2 rounded-xl bg-muted/50 p-4">
+                                <div className="mt-2 rounded-2xl bg-muted/50 p-4">
                                     <p className="text-sm leading-6">
                                         {request.message ||
                                             "No message was provided."}
@@ -333,7 +342,9 @@ export default async function LandlordRequestDetailsPage({
 
                             <div className="grid gap-5 sm:grid-cols-2">
                                 <div className="flex gap-3">
-                                    <CalendarDays className="mt-0.5 h-5 w-5 shrink-0 text-muted-foreground" />
+                                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+                                        <CalendarDays className="h-4 w-4" />
+                                    </div>
 
                                     <div>
                                         <p className="text-sm font-medium">
@@ -343,15 +354,17 @@ export default async function LandlordRequestDetailsPage({
                                         <p className="mt-1 text-sm text-muted-foreground">
                                             {request.moveInDate
                                                 ? new Date(
-                                                      request.moveInDate
-                                                  ).toLocaleDateString()
+                                                    request.moveInDate
+                                                ).toLocaleDateString()
                                                 : "Not specified"}
                                         </p>
                                     </div>
                                 </div>
 
                                 <div className="flex gap-3">
-                                    <CalendarDays className="mt-0.5 h-5 w-5 shrink-0 text-muted-foreground" />
+                                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+                                        <CalendarDays className="h-4 w-4" />
+                                    </div>
 
                                     <div>
                                         <p className="text-sm font-medium">
@@ -373,61 +386,60 @@ export default async function LandlordRequestDetailsPage({
                 {/* Sidebar */}
                 <div className="space-y-6 lg:sticky lg:top-8 lg:self-start">
                     {/* Status */}
-                    <section className="rounded-2xl border bg-card p-6">
-                        <h2 className="text-lg font-semibold">
+                    <section className="rounded-2xl border border-border bg-card p-6 shadow-sm">
+                        <h2 className="font-serif text-lg tracking-tight">
                             Request Status
                         </h2>
 
-                        <div className="mt-5 flex items-center gap-3">
-                            <div className="flex size-10 items-center justify-center rounded-full bg-muted">
-                                <StatusIcon className="size-5 text-muted-foreground" />
-                            </div>
+                        <div className="mt-5">
+                            <span
+                                className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-sm font-medium shadow-sm ${status.classes}`}
+                            >
+                                <StatusIcon className="h-4 w-4" />
+                                {status.label}
+                            </span>
 
-                            <div>
-                                <p className="font-medium">
-                                    {status.label}
-                                </p>
-
-                                <p className="mt-1 text-xs text-muted-foreground">
-                                    {request.status === "PENDING"
-                                        ? "Waiting for your decision"
+                            <p className="mt-2 text-xs text-muted-foreground">
+                                {request.status === "PENDING"
+                                    ? "Waiting for your decision"
+                                    : request.status ===
+                                        "APPROVED"
+                                        ? "Tenant can proceed with payment"
                                         : request.status ===
-                                            "APPROVED"
-                                          ? "Tenant can proceed with payment"
-                                          : request.status ===
-                                              "ACTIVE"
+                                            "ACTIVE"
                                             ? "Rental is currently active"
                                             : request.status ===
                                                 "COMPLETED"
-                                              ? "Rental has been completed"
-                                              : `Request ${request.status.toLowerCase()}`}
-                                </p>
-                            </div>
+                                                ? "Rental has been completed"
+                                                : `Request ${request.status.toLowerCase()}`}
+                            </p>
                         </div>
 
                         {request.status === "PENDING" && (
-                            <div className="mt-6 border-t pt-5">
-                                <p className="mb-3 text-sm font-medium">
+                            <div className="mt-6 border-t border-border pt-5">
+                                <p className="mb-3 text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
                                     Make a decision
                                 </p>
 
-                                <RentalRequestActions
-                                    requestId={request.id}
-                                    status={request.status}
-                                />
+                                <div className="flex flex-col gap-2 [&_a]:w-full [&_button]:w-full">
+                                    <RentalRequestActions
+                                        requestId={request.id}
+                                        status={request.status}
+                                    />
+                                </div>
                             </div>
                         )}
                     </section>
 
                     {/* Property summary */}
-                    <section className="rounded-2xl border bg-card p-6">
-                        <h2 className="text-lg font-semibold">
+                    <section className="rounded-2xl border border-border bg-card p-6 shadow-sm">
+                        <h2 className="font-serif text-lg tracking-tight">
                             Property Summary
                         </h2>
 
                         <div className="mt-5 space-y-4">
                             <div>
-                                <p className="text-xs text-muted-foreground">
+                                <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
                                     Property
                                 </p>
 
@@ -437,33 +449,38 @@ export default async function LandlordRequestDetailsPage({
                             </div>
 
                             <div>
-                                <p className="text-xs text-muted-foreground">
+                                <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
                                     Monthly Rent
                                 </p>
 
-                                <p className="mt-1 text-lg font-semibold">
+                                <p className="mt-1 font-serif text-lg">
                                     ৳{" "}
                                     {request.property.price.toLocaleString()}
                                 </p>
                             </div>
 
                             <div>
-                                <p className="text-xs text-muted-foreground">
+                                <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
                                     Availability
                                 </p>
 
-                                <p className="mt-1 text-sm font-medium">
+                                <span
+                                    className={`mt-1 inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-medium shadow-sm ${request.property.isAvailable
+                                        ? "border border-green-200 bg-white text-green-700"
+                                        : "border border-border bg-white text-muted-foreground"
+                                        }`}
+                                >
                                     {request.property.isAvailable
                                         ? "Available"
                                         : "Unavailable"}
-                                </p>
+                                </span>
                             </div>
                         </div>
                     </section>
 
                     {/* Request ID */}
-                    <section className="rounded-2xl border bg-card p-6">
-                        <p className="text-xs text-muted-foreground">
+                    <section className="rounded-2xl border border-border bg-card p-6 shadow-sm">
+                        <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
                             Request ID
                         </p>
 

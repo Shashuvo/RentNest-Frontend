@@ -1,25 +1,50 @@
 import Link from "next/link";
 import Image from "next/image";
-import { CalendarDays, MapPin, MessageSquare, ArrowRight } from "lucide-react";
+import { CalendarDays, MapPin, MessageSquare, ArrowRight, ClipboardList } from "lucide-react";
 
 import { getMyRentalRequests } from "../_actions/rentalAction";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
-const getStatusVariant = (status: string) => {
+const getStatusLabel = (status: string) => {
+    switch (status) {
+        case "APPROVED":
+            return "APPROVED";
+
+        case "ACTIVE":
+            return "ACTIVE";
+
+        case "COMPLETED":
+            return "COMPLETED";
+
+        case "REJECTED":
+            return "REJECTED";
+
+        case "CANCELLED":
+            return "CANCELLED";
+
+        default:
+            return "PENDING";
+    }
+};
+
+const getStatusClasses = (status: string) => {
     switch (status) {
         case "APPROVED":
         case "ACTIVE":
-            return "default";
+            return "border-2 border-green-600 bg-white text-green-700";
 
         case "PENDING":
-            return "secondary";
+            return "border-2 border-yellow-600 bg-white text-yellow-700";
+
+        case "COMPLETED":
+            return "border-2 border-primary/80 bg-white text-primary";
 
         case "REJECTED":
-            return "destructive";
+        case "CANCELLED":
+            return "border-2 border-red-600 bg-white text-red-700";
 
         default:
-            return "outline";
+            return "border-2 border-border bg-white text-muted-foreground";
     }
 };
 
@@ -29,14 +54,20 @@ export default async function RentalRequestsPage() {
 
     return (
         <div className="container mx-auto px-4 py-8">
-            <div className="mb-8">
-                <h1 className="font-serif text-3xl tracking-tight">
-                    My Rental Requests
-                </h1>
+            <div className="mb-8 flex items-center gap-4">
+                <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary ring-4 ring-primary/5">
+                    <ClipboardList className="size-5" />
+                </span>
 
-                <p className="mt-1.5 text-sm text-muted-foreground">
-                    View and manage your rental requests.
-                </p>
+                <div>
+                    <h1 className="font-serif text-3xl tracking-tight">
+                        My Rental Requests
+                    </h1>
+
+                    <p className="mt-1.5 text-sm text-muted-foreground">
+                        View and manage your rental requests.
+                    </p>
+                </div>
             </div>
 
             {requests.length === 0 ? (
@@ -97,14 +128,13 @@ export default async function RentalRequestsPage() {
                                 )}
 
                                 <div className="absolute right-3 top-3">
-                                    <Badge
-                                        variant={getStatusVariant(
+                                    <span
+                                        className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${getStatusClasses(
                                             request.status
-                                        )}
-                                        className="rounded-full"
+                                        )}`}
                                     >
-                                        {request.status}
-                                    </Badge>
+                                        {getStatusLabel(request.status)}
+                                    </span>
                                 </div>
                             </div>
 

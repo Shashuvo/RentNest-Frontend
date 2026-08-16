@@ -109,11 +109,11 @@ export function Navbar({ user }: NavbarProps) {
         }
 
         if (action === "rental-requests") {
-            router.push("/rental-requests"); 
+            router.push("/rental-requests");
         }
 
         if (action === "landlord-requests") {
-            router.push("/landlord-requests"); 
+            router.push("/landlord-requests");
         }
 
         if (action === "payment") {
@@ -247,8 +247,28 @@ export function Navbar({ user }: NavbarProps) {
                             </DropdownMenuContent>
                         </DropdownMenu>
                     ) : (
-                        <Link href={"/login"}>
-                            <Button className="rounded-full px-8 shadow-sm">Login</Button>
+                        <div className="hidden items-center gap-2 sm:flex">
+                            <Link href="/login">
+                                <Button
+                                    variant="ghost"
+                                    className="rounded-full px-5 text-foreground hover:bg-primary/10 hover:text-primary"
+                                >
+                                    Login
+                                </Button>
+                            </Link>
+                            <Link href="/register">
+                                <Button className="rounded-full px-6 shadow-sm">
+                                    Register
+                                </Button>
+                            </Link>
+                        </div>
+                    )}
+
+                    {!user.success && (
+                        <Link href="/register" className="sm:hidden">
+                            <Button className="rounded-full px-5 shadow-sm" size="sm">
+                                Register
+                            </Button>
                         </Link>
                     )}
 
@@ -290,6 +310,19 @@ export function Navbar({ user }: NavbarProps) {
                                 </li>
                             )
                         })}
+
+                        {!user.success && (
+                            <li className="mt-2 border-t border-border pt-3">
+                                <Link
+                                    href="/login"
+                                    onClick={() => setMobileOpen(false)}
+                                    className="flex items-center gap-3 rounded-full px-4 py-2.5 text-sm font-medium text-muted-foreground transition-all duration-200 hover:bg-primary/10 hover:text-primary"
+                                >
+                                    <User className="size-4" />
+                                    Login
+                                </Link>
+                            </li>
+                        )}
                     </ul>
                 </div>
             )}

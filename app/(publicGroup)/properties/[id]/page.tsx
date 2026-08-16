@@ -45,13 +45,12 @@ export default async function PropertyDetailPage({ params }: PageProps) {
         <main className="min-h-screen bg-background">
             <section className="px-6 pt-8 lg:px-12 xl:px-16">
                 <div className="mx-auto max-w-7xl">
-                    <Link
-                        href="/properties"
-                        className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-                    >
-                        <ArrowLeft className="size-4" />
-                        Back to properties
+                <Button asChild variant="ghost" className="-ml-3 rounded-full">
+                    <Link href="/properties">
+                        <ArrowLeft className="mr-2 h-4 w-4" />
+                        Back to Properties
                     </Link>
+                </Button>
                 </div>
             </section>
 
@@ -99,17 +98,17 @@ export default async function PropertyDetailPage({ params }: PageProps) {
 
                             <div className="text-right">
                                 <p className="font-serif text-3xl text-primary">
-                                    ${property.price.toLocaleString()}
+                                    ৳{property.price.toLocaleString()}
                                     <span className="text-base font-sans text-muted-foreground"> / month</span>
                                 </p>
                                 <span
                                     className={`mt-2 inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium ${property.isAvailable
                                         ? "bg-emerald-500/10 text-emerald-600"
-                                        : "bg-muted text-muted-foreground"
+                                        : "bg-rose-500/10 text-rose-600"
                                         }`}
                                 >
                                     <span
-                                        className={`h-1.5 w-1.5 rounded-full ${property.isAvailable ? "bg-emerald-500" : "bg-muted-foreground"
+                                        className={`h-1.5 w-1.5 rounded-full ${property.isAvailable ? "bg-emerald-500" : "bg-rose-500"
                                             }`}
                                     />
                                     {property.isAvailable ? "Available now" : "Not available"}
@@ -293,21 +292,13 @@ export default async function PropertyDetailPage({ params }: PageProps) {
 
                             {/* Contact Landlord */}
                             <Button
-                                size="lg"
-                                variant="outline"
-                                className="mt-3 w-full rounded-full"
-                            >
-                                Contact landlord
-                            </Button>
-
-                            {/* Save Property */}
-                            <Button
                                 variant="outline"
                                 size="lg"
                                 className="mt-3 w-full rounded-full border-primary/20 text-primary hover:bg-primary hover:text-primary-foreground"
                             >
-                                Save property
+                                Contact landlord
                             </Button>
+
                         </div>
                     </div>
                 </div>

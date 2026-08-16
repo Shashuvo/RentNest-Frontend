@@ -104,8 +104,13 @@ function StepCard({
     description: string;
 }) {
     return (
-        <div className="group relative">
-            <div className="mb-5 flex items-center justify-between">
+        <div className="group relative overflow-hidden rounded-3xl border border-border bg-card p-7 shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-primary/30 hover:shadow-[0_24px_60px_-24px_hsl(var(--primary)/0.4)]">
+            <div
+                className="pointer-events-none absolute -right-10 -top-10 h-28 w-28 rounded-full bg-primary/5 transition-transform duration-500 group-hover:scale-150"
+                aria-hidden="true"
+            />
+
+            <div className="relative mb-5 flex items-center justify-between">
                 <div className="flex h-11 w-11 items-center justify-center rounded-full bg-primary/10 text-primary ring-4 ring-primary/5 transition-all duration-300 group-hover:bg-primary group-hover:text-primary-foreground group-hover:ring-primary/10">
                     <Icon className="h-5 w-5" />
                 </div>
@@ -115,15 +120,17 @@ function StepCard({
                 </span>
             </div>
 
-            <h3 className="font-serif text-lg tracking-tight text-foreground">
+            <h3 className="relative font-serif text-lg tracking-tight text-foreground">
                 {title}
             </h3>
 
-            <p className="mt-2 text-sm leading-6 text-muted-foreground">
+            <p className="relative mt-2 text-sm leading-6 text-muted-foreground">
                 {description}
             </p>
 
-            <div className="mt-4 h-1 w-8 rounded-full bg-primary/20 transition-all duration-300 group-hover:w-12 group-hover:bg-primary/40" />
+            <div className="relative mt-4 h-1 w-8 rounded-full bg-primary/20 transition-all duration-300 group-hover:w-12 group-hover:bg-primary/40" />
+
+            <div className="absolute bottom-0 left-0 h-1 w-0 rounded-full bg-primary transition-all duration-500 group-hover:w-full" />
         </div>
     );
 }
@@ -266,23 +273,29 @@ export default function HowItWorksPage() {
                 />
 
                 <div className="relative mx-auto max-w-6xl px-6 py-20 sm:py-24">
-                    <div className="max-w-2xl">
-                        <div className="inline-flex items-center gap-2 rounded-full border border-primary/15 bg-card px-3 py-1.5 text-xs font-medium tracking-wide text-primary shadow-sm">
-                            <Users className="h-3.5 w-3.5" />
-                            For Tenants
+                    <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+                        <div className="max-w-2xl">
+                            <div className="inline-flex items-center gap-2 rounded-full border border-primary/15 bg-card px-3 py-1.5 text-xs font-medium tracking-wide text-primary shadow-sm">
+                                <Users className="h-3.5 w-3.5" />
+                                For Tenants
+                            </div>
+
+                            <h2 className="mt-4 font-serif text-3xl tracking-[-0.03em] text-foreground sm:text-4xl">
+                                From search to move-in
+                            </h2>
+
+                            <p className="mt-4 leading-7 text-muted-foreground">
+                                Finding your next home shouldn&apos;t be complicated.
+                                RentNest guides you through every important step.
+                            </p>
                         </div>
 
-                        <h2 className="mt-4 font-serif text-3xl tracking-[-0.03em] text-foreground sm:text-4xl">
-                            From search to move-in
-                        </h2>
-
-                        <p className="mt-4 leading-7 text-muted-foreground">
-                            Finding your next home shouldn&apos;t be complicated.
-                            RentNest guides you through every important step.
-                        </p>
+                        <span className="hidden shrink-0 rounded-full border border-primary/15 bg-card px-4 py-1.5 text-xs font-medium tracking-wide text-primary shadow-sm sm:inline-flex">
+                            {tenantSteps.length} simple steps
+                        </span>
                     </div>
 
-                    <div className="mt-14 grid gap-x-12 gap-y-12 md:grid-cols-2 lg:grid-cols-3">
+                    <div className="mt-14 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                         {tenantSteps.map((item) => (
                             <StepCard
                                 key={item.step}
@@ -301,24 +314,30 @@ export default function HowItWorksPage() {
                 />
 
                 <div className="relative mx-auto max-w-6xl px-6 py-20 sm:py-24">
-                    <div className="ml-auto max-w-2xl text-left lg:text-right">
-                        <div className="inline-flex items-center gap-2 rounded-full border border-primary/15 bg-card px-3 py-1.5 text-xs font-medium tracking-wide text-primary shadow-sm lg:ml-auto">
-                            <Home className="h-3.5 w-3.5" />
-                            For Landlords
+                    <div className="flex flex-col gap-4 sm:flex-row-reverse sm:items-end sm:justify-between">
+                        <div className="max-w-2xl text-left lg:text-right">
+                            <div className="inline-flex items-center gap-2 rounded-full border border-primary/15 bg-card px-3 py-1.5 text-xs font-medium tracking-wide text-primary shadow-sm lg:ml-auto">
+                                <Home className="h-3.5 w-3.5" />
+                                For Landlords
+                            </div>
+
+                            <h2 className="mt-4 font-serif text-3xl tracking-[-0.03em] text-foreground sm:text-4xl">
+                                Manage rentals with confidence
+                            </h2>
+
+                            <p className="mt-4 leading-7 text-muted-foreground">
+                                RentNest gives landlords the tools they need to
+                                list properties, review tenants, and manage
+                                rental activity efficiently.
+                            </p>
                         </div>
 
-                        <h2 className="mt-4 font-serif text-3xl tracking-[-0.03em] text-foreground sm:text-4xl">
-                            Manage rentals with confidence
-                        </h2>
-
-                        <p className="mt-4 leading-7 text-muted-foreground">
-                            RentNest gives landlords the tools they need to
-                            list properties, review tenants, and manage
-                            rental activity efficiently.
-                        </p>
+                        <span className="hidden shrink-0 rounded-full border border-primary/15 bg-card px-4 py-1.5 text-xs font-medium tracking-wide text-primary shadow-sm sm:inline-flex">
+                            {landlordSteps.length} simple steps
+                        </span>
                     </div>
 
-                    <div className="mt-14 grid gap-x-12 gap-y-12 md:grid-cols-2 lg:grid-cols-3">
+                    <div className="mt-14 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                         {landlordSteps.map((item) => (
                             <StepCard
                                 key={item.step}

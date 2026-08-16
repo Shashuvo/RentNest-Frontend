@@ -7,6 +7,7 @@ import {
     CheckCircle2,
     Clock3,
     CreditCard,
+    FileText,
     MapPin,
     MessageSquare,
     Star,
@@ -14,7 +15,6 @@ import {
     XCircle,
 } from "lucide-react";
 
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
 import { getMyRentalRequestById } from "../../_actions/rentalAction";
@@ -35,14 +35,24 @@ const getStatusConfig = (status: string) => {
             return {
                 label: status,
                 icon: CheckCircle2,
-                variant: "default" as const,
+                classes:
+                    "border-2 border-green-200 bg-white text-green-700",
             };
 
         case "PENDING":
             return {
                 label: "PENDING",
                 icon: Clock3,
-                variant: "secondary" as const,
+                classes:
+                    "border-2 border-yellow-600 bg-white text-yellow-700",
+            };
+
+        case "COMPLETED":
+            return {
+                label: "COMPLETED",
+                icon: CheckCircle2,
+                classes:
+                    "border-2 border-primary/80 bg-white text-primary",
             };
 
         case "REJECTED":
@@ -50,14 +60,15 @@ const getStatusConfig = (status: string) => {
             return {
                 label: status,
                 icon: XCircle,
-                variant: "destructive" as const,
+                classes: "border border-red-200 bg-white text-red-700",
             };
 
         default:
             return {
                 label: status,
                 icon: Clock3,
-                variant: "outline" as const,
+                classes:
+                    "border border-border bg-white text-muted-foreground",
             };
     }
 };
@@ -91,23 +102,28 @@ export default async function RentalRequestDetailsPage({
                 </Button>
 
                 <div className="mt-5 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
-                    <div>
-                        <h1 className="font-serif text-3xl tracking-tight">
-                            Rental Request Details
-                        </h1>
+                    <div className="flex items-center gap-4">
+                        <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary ring-4 ring-primary/5">
+                            <FileText className="size-5" />
+                        </span>
 
-                        <p className="mt-1.5 text-sm text-muted-foreground">
-                            View the details of your rental request.
-                        </p>
+                        <div>
+                            <h1 className="font-serif text-3xl tracking-tight">
+                                Rental Request Details
+                            </h1>
+
+                            <p className="mt-1.5 text-sm text-muted-foreground">
+                                View the details of your rental request.
+                            </p>
+                        </div>
                     </div>
 
-                    <Badge
-                        variant={status.variant}
-                        className="w-fit gap-1.5 rounded-full px-3 py-1.5"
+                    <span
+                        className={`inline-flex w-fit items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-medium shadow-sm ${status.classes}`}
                     >
                         <StatusIcon className="h-4 w-4" />
                         {status.label}
-                    </Badge>
+                    </span>
                 </div>
             </div>
 
