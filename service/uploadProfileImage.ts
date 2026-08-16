@@ -2,15 +2,8 @@
 
 import { cookies } from "next/headers";
 
-interface UpdateMePayload {
-    name: string;
-    phone?: string;
-    address?: string;
-    photoUrl?: string;
-}
-
-export const updateMe = async (
-    payload: UpdateMePayload
+export const uploadProfileImage = async (
+    file: File
 ) => {
     const cookieStore = await cookies();
 
@@ -24,15 +17,18 @@ export const updateMe = async (
         };
     }
 
+    const formData = new FormData();
+
+    formData.append("image", file);
+
     const res = await fetch(
-        `${process.env.BACKEND_API_URL}/api/auth/update-me`,
+        `${process.env.BACKEND_API_URL}/api/upload/profile-image`,
         {
-            method: "PATCH",
+            method: "POST",
             headers: {
-                "Content-Type": "application/json",
                 Cookie: `accessToken=${accessToken}`,
             },
-            body: JSON.stringify(payload),
+            body: formData,
             cache: "no-store",
         }
     );
