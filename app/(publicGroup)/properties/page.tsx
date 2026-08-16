@@ -32,6 +32,9 @@ export default function PropertiesPage() {
 
   const handleReset = () => setFilters(defaultFilters)
 
+  const hasActiveFilters =
+    JSON.stringify(filters) !== JSON.stringify(defaultFilters)
+
   return (
     <main className="min-h-screen bg-background">
       {/* Header */}
@@ -39,6 +42,10 @@ export default function PropertiesPage() {
         {/* Ambient glow accent */}
         <div
           className="pointer-events-none absolute -left-24 -top-24 h-72 w-72 rounded-full bg-primary/10 blur-3xl"
+          aria-hidden="true"
+        />
+        <div
+          className="pointer-events-none absolute -right-32 top-10 h-64 w-64 rounded-full bg-accent/10 blur-3xl"
           aria-hidden="true"
         />
 
@@ -51,7 +58,9 @@ export default function PropertiesPage() {
 
             <h1 className="font-serif text-4xl leading-[0.98] tracking-[-0.045em] text-foreground sm:text-5xl lg:text-6xl">
               Find a place that feels like{" "}
-              <span className="text-primary">home.</span>
+              <span className="bg-linear-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+                home.
+              </span>
             </h1>
 
             <p className="mt-5 max-w-xl text-base leading-7 text-muted-foreground sm:text-lg">
@@ -228,11 +237,14 @@ export default function PropertiesPage() {
               <Button
                 variant="outline"
                 size="icon"
-                className="size-11 shrink-0 rounded-full border-primary/20 text-primary hover:bg-primary hover:text-primary-foreground"
+                className="relative size-11 shrink-0 rounded-full border-primary/20 text-primary hover:bg-primary hover:text-primary-foreground"
                 onClick={handleReset}
                 title="Reset filters"
               >
                 <RotateCcw className="size-4" />
+                {hasActiveFilters && (
+                  <span className="absolute right-1 top-1 flex size-2 rounded-full bg-primary ring-2 ring-background" />
+                )}
               </Button>
             </div>
           </div>
@@ -242,8 +254,19 @@ export default function PropertiesPage() {
               {Array.from({ length: 8 }).map((_, i) => (
                 <div
                   key={i}
-                  className="h-90 animate-pulse rounded-2xl bg-muted"
-                />
+                  className="overflow-hidden rounded-2xl border border-border bg-card shadow-sm"
+                >
+                  <div className="aspect-16/10 animate-pulse bg-muted" />
+                  <div className="space-y-3 p-4">
+                    <div className="h-6 w-2/3 animate-pulse rounded-full bg-muted" />
+                    <div className="h-4 w-1/2 animate-pulse rounded-full bg-muted" />
+                    <div className="h-4 w-full animate-pulse rounded-full bg-muted" />
+                    <div className="flex gap-2 pt-1">
+                      <div className="h-9 flex-1 animate-pulse rounded-full bg-muted" />
+                      <div className="h-9 w-9 animate-pulse rounded-full bg-muted" />
+                    </div>
+                  </div>
+                </div>
               ))}
             </div>
           ) : properties.length > 0 ? (
