@@ -187,7 +187,8 @@ export type RentalRequestStatus =
     | "ACTIVE"
     | "APPROVED"
     | "REJECTED"
-    | "CANCELLED";
+    | "CANCELLED"
+    | "COMPLETED";
 
 export type CreateRentalRequestPayload = {
     propertyId: string;
@@ -258,7 +259,6 @@ export type RentalRequestPayment = {
     updatedAt: string;
 };
 
-export type RentalRequestReview = Record<string, unknown>;
 
 export type RentalRequest = {
     id: string;
@@ -463,4 +463,25 @@ export type UpdateRentalStatusState = {
     statusCode: number;
     message: string;
     data: LandlordRentalRequest;
+};
+
+export type CreateReviewPayload = {
+    propertyId: string;
+    rentalRequestId: string;
+    rating: number;
+    comment: string;
+};
+
+export type RentalRequestReview = {
+    id: string;
+    rating: number;
+    comment: string;
+    createdAt: string;
+};
+
+export type CreateReviewState = {
+    success: boolean;
+    statusCode: number;
+    message: string;
+    data: RentalRequestReview;
 };

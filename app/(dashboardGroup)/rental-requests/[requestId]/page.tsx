@@ -8,6 +8,7 @@ import {
     CreditCard,
     MapPin,
     MessageSquare,
+    Star,
     User,
     XCircle,
 } from "lucide-react";
@@ -17,6 +18,7 @@ import { Button } from "@/components/ui/button";
 
 import { getMyRentalRequestById } from "../../_actions/rentalAction";
 import PayNowButton from "@/app/(dashboardGroup)/_components/tenant/PayNowButton";
+import ReviewDialog from "../../_components/tenant/ReviewDialog";
 
 type RentalRequestDetailsPageProps = {
     params: Promise<{
@@ -240,8 +242,8 @@ export default async function RentalRequestDetailsPage({
                                     <p className="mt-1 text-sm text-muted-foreground">
                                         {request.moveInDate
                                             ? new Date(
-                                                  request.moveInDate
-                                              ).toLocaleDateString()
+                                                request.moveInDate
+                                            ).toLocaleDateString()
                                             : "Not specified"}
                                     </p>
                                 </div>
@@ -335,17 +337,17 @@ export default async function RentalRequestDetailsPage({
                                     {/* Rejected */}
                                     {(request.status === "REJECTED" ||
                                         request.status === "CANCELLED") && (
-                                        <div className="rounded-xl bg-destructive/10 p-4">
-                                            <p className="text-sm font-medium text-destructive">
-                                                Payment unavailable
-                                            </p>
+                                            <div className="rounded-xl bg-destructive/10 p-4">
+                                                <p className="text-sm font-medium text-destructive">
+                                                    Payment unavailable
+                                                </p>
 
-                                            <p className="mt-1 text-xs leading-5 text-muted-foreground">
-                                                Payment is unavailable for
-                                                this rental request.
-                                            </p>
-                                        </div>
-                                    )}
+                                                <p className="mt-1 text-xs leading-5 text-muted-foreground">
+                                                    Payment is unavailable for
+                                                    this rental request.
+                                                </p>
+                                            </div>
+                                        )}
 
                                     {/* Active without payment */}
                                     {request.status === "ACTIVE" && (
@@ -366,73 +368,73 @@ export default async function RentalRequestDetailsPage({
                                     {/* Completed */}
                                     {request.payment.status ===
                                         "COMPLETED" && (
-                                        <div className="rounded-xl bg-primary/10 p-4">
-                                            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                                                <div>
-                                                    <p className="text-sm font-semibold">
-                                                        Payment completed
-                                                    </p>
+                                            <div className="rounded-xl bg-primary/10 p-4">
+                                                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                                                    <div>
+                                                        <p className="text-sm font-semibold">
+                                                            Payment completed
+                                                        </p>
 
-                                                    <p className="mt-1 text-xs leading-5 text-muted-foreground">
-                                                        Your payment has been
-                                                        successfully completed
-                                                        and your rental is
-                                                        active.
-                                                    </p>
-                                                </div>
+                                                        <p className="mt-1 text-xs leading-5 text-muted-foreground">
+                                                            Your payment has been
+                                                            successfully completed
+                                                            and your rental is
+                                                            active.
+                                                        </p>
+                                                    </div>
 
-                                                <Button
-                                                    asChild
-                                                    variant="outline"
-                                                    size="sm"
-                                                >
-                                                    <Link
-                                                        href={`/payment/${request.payment.id}`}
+                                                    <Button
+                                                        asChild
+                                                        variant="outline"
+                                                        size="sm"
                                                     >
-                                                        View Payment
-                                                    </Link>
-                                                </Button>
+                                                        <Link
+                                                            href={`/payment/${request.payment.id}`}
+                                                        >
+                                                            View Payment
+                                                        </Link>
+                                                    </Button>
+                                                </div>
                                             </div>
-                                        </div>
-                                    )}
+                                        )}
 
                                     {/* Pending */}
                                     {request.payment.status ===
                                         "PENDING" && (
-                                        <div className="rounded-xl bg-muted/50 p-4">
-                                            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                                                <div>
-                                                    <p className="text-sm font-semibold">
-                                                        Payment pending
-                                                    </p>
+                                            <div className="rounded-xl bg-muted/50 p-4">
+                                                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                                                    <div>
+                                                        <p className="text-sm font-semibold">
+                                                            Payment pending
+                                                        </p>
 
-                                                    <p className="mt-1 text-xs leading-5 text-muted-foreground">
-                                                        Your payment session
-                                                        has been created but
-                                                        payment has not been
-                                                        completed.
-                                                    </p>
-                                                </div>
+                                                        <p className="mt-1 text-xs leading-5 text-muted-foreground">
+                                                            Your payment session
+                                                            has been created but
+                                                            payment has not been
+                                                            completed.
+                                                        </p>
+                                                    </div>
 
-                                                <Button
-                                                    asChild
-                                                    size="sm"
-                                                >
-                                                    <Link
-                                                        href={`/payment/${request.payment.id}`}
+                                                    <Button
+                                                        asChild
+                                                        size="sm"
                                                     >
-                                                        Continue Payment
-                                                    </Link>
-                                                </Button>
+                                                        <Link
+                                                            href={`/payment/${request.payment.id}`}
+                                                        >
+                                                            Continue Payment
+                                                        </Link>
+                                                    </Button>
+                                                </div>
                                             </div>
-                                        </div>
-                                    )}
+                                        )}
 
                                     {/* Other payment status */}
                                     {request.payment.status !==
                                         "COMPLETED" &&
                                         request.payment.status !==
-                                            "PENDING" && (
+                                        "PENDING" && (
                                             <div className="rounded-xl bg-muted/50 p-4">
                                                 <p className="text-sm font-medium">
                                                     Payment status:{" "}
@@ -463,6 +465,54 @@ export default async function RentalRequestDetailsPage({
                             )}
                         </div>
                     </section>
+
+                    {/* Review */}
+                    {request.status === "COMPLETED" && (
+                        <section className="rounded-2xl border bg-card p-6">
+                            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                                <div>
+                                    <h2 className="font-semibold">
+                                        Your Review
+                                    </h2>
+
+                                    <p className="mt-1 text-sm text-muted-foreground">
+                                        Share your experience with this property.
+                                    </p>
+                                </div>
+
+                                {request.reviews ? (
+                                    <div className="rounded-xl bg-muted/50 px-4 py-3">
+                                        <div className="flex items-center gap-1">
+                                            {[1, 2, 3, 4, 5].map((star) => (
+                                                <Star
+                                                    key={star}
+                                                    className={`size-4 ${star <= request.reviews!.rating
+                                                        ? "fill-yellow-400 text-yellow-400"
+                                                        : "text-muted-foreground"
+                                                        }`}
+                                                />
+                                            ))}
+                                        </div>
+
+                                        <p className="mt-2 text-sm">
+                                            {request.reviews.comment}
+                                        </p>
+
+                                        <p className="mt-1 text-xs text-muted-foreground">
+                                            {new Date(
+                                                request.reviews.createdAt
+                                            ).toLocaleDateString()}
+                                        </p>
+                                    </div>
+                                ) : (
+                                    <ReviewDialog
+                                        propertyId={request.propertyId}
+                                        rentalRequestId={request.id}
+                                    />
+                                )}
+                            </div>
+                        </section>
+                    )}
                 </div>
 
                 {/* Sidebar */}
@@ -526,10 +576,10 @@ export default async function RentalRequestDetailsPage({
                                     {request.status === "PENDING"
                                         ? "Waiting for landlord approval"
                                         : request.status === "APPROVED"
-                                          ? "Approved — payment required"
-                                          : request.status === "ACTIVE"
-                                            ? "Your rental is active"
-                                            : `Request ${request.status.toLowerCase()}`}
+                                            ? "Approved — payment required"
+                                            : request.status === "ACTIVE"
+                                                ? "Your rental is active"
+                                                : `Request ${request.status.toLowerCase()}`}
                                 </p>
                             </div>
                         </div>
