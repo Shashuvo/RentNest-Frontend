@@ -9,6 +9,7 @@ import {
     Clock3,
     CreditCard,
     Home,
+    Loader2,
 } from "lucide-react";
 
 import { DashboardHeader } from "../_components/shared/DashboardHeader";
@@ -19,11 +20,10 @@ import { getMyPayments } from "../_actions/paymentAction";
 
 import { Payment, RentalRequest } from "@/lib/types";
 import { Button } from "@/components/ui/button";
+import Image from "next/image";
 
 export default function DashboardPage() {
-    const [rentalRequests, setRentalRequests] = useState<
-        RentalRequest[]
-    >([]);
+    const [rentalRequests, setRentalRequests] = useState<RentalRequest[]>([]);
 
     const [payments, setPayments] = useState<Payment[]>([]);
 
@@ -83,13 +83,25 @@ export default function DashboardPage() {
             />
 
             {loading ? (
-                <div className="rounded-2xl border bg-card p-10 text-center">
-                    <p className="text-sm text-muted-foreground">
-                        Loading dashboard...
-                    </p>
+                <div className="relative overflow-hidden rounded-3xl border bg-card p-10 text-center">
+                    <div className="pointer-events-none absolute -top-16 left-1/2 h-56 w-56 -translate-x-1/2 rounded-full bg-primary/10 blur-3xl" />
+
+                    <div className="relative flex flex-col items-center gap-3">
+                        <div className="flex h-11 w-11 items-center justify-center rounded-full bg-primary/10 text-primary">
+                            <Loader2 className="h-5 w-5 animate-spin" />
+                        </div>
+
+                        <p className="font-serif text-base">
+                            Loading dashboard...
+                        </p>
+
+                        <p className="text-sm text-muted-foreground">
+                            Fetching your latest rental activity.
+                        </p>
+                    </div>
                 </div>
             ) : error ? (
-                <div className="rounded-2xl border border-destructive/20 bg-card p-10 text-center">
+                <div className="relative overflow-hidden rounded-3xl border border-destructive/20 bg-card p-10 text-center">
                     <p className="text-sm text-destructive">
                         {error}
                     </p>
@@ -129,10 +141,12 @@ export default function DashboardPage() {
 
                     {/* Quick Actions */}
                     <section className="grid gap-4 sm:grid-cols-2">
-                        <div className="rounded-2xl border bg-card p-6">
-                            <div className="flex items-start justify-between gap-4">
+                        <div className="group relative overflow-hidden rounded-2xl border bg-card p-6 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-[0_20px_45px_-20px_hsl(var(--primary)/0.35)]">
+                            <div className="pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full bg-primary/5 transition-transform duration-500 group-hover:scale-125" />
+
+                            <div className="relative flex items-start justify-between gap-4">
                                 <div>
-                                    <h2 className="font-semibold">
+                                    <h2 className="font-serif text-lg">
                                         Find Your Next Home
                                     </h2>
 
@@ -142,12 +156,14 @@ export default function DashboardPage() {
                                     </p>
                                 </div>
 
-                                <Home className="h-5 w-5 shrink-0 text-primary" />
+                                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+                                    <Home className="h-5 w-5" />
+                                </div>
                             </div>
 
                             <Button
                                 asChild
-                                className="mt-5 rounded-full"
+                                className="relative mt-5 rounded-full"
                             >
                                 <Link href="/properties">
                                     Browse Properties
@@ -156,10 +172,12 @@ export default function DashboardPage() {
                             </Button>
                         </div>
 
-                        <div className="rounded-2xl border bg-card p-6">
-                            <div className="flex items-start justify-between gap-4">
+                        <div className="group relative overflow-hidden rounded-2xl border bg-card p-6 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-[0_20px_45px_-20px_hsl(var(--primary)/0.35)]">
+                            <div className="pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full bg-primary/5 transition-transform duration-500 group-hover:scale-125" />
+
+                            <div className="relative flex items-start justify-between gap-4">
                                 <div>
-                                    <h2 className="font-semibold">
+                                    <h2 className="font-serif text-lg">
                                         Track Your Requests
                                     </h2>
 
@@ -169,13 +187,15 @@ export default function DashboardPage() {
                                     </p>
                                 </div>
 
-                                <ClipboardList className="h-5 w-5 shrink-0 text-primary" />
+                                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+                                    <ClipboardList className="h-5 w-5" />
+                                </div>
                             </div>
 
                             <Button
                                 asChild
                                 variant="outline"
-                                className="mt-5 rounded-full"
+                                className="relative mt-5 rounded-full"
                             >
                                 <Link href="/rental-requests">
                                     View Requests
@@ -189,7 +209,11 @@ export default function DashboardPage() {
                     <section className="space-y-4">
                         <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
                             <div>
-                                <h2 className="text-lg font-semibold">
+                                <span className="inline-flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+                                    Activity
+                                </span>
+
+                                <h2 className="font-serif text-lg">
                                     Recent Rental Requests
                                 </h2>
 
@@ -203,6 +227,7 @@ export default function DashboardPage() {
                                     asChild
                                     variant="ghost"
                                     size="sm"
+                                    className="rounded-full"
                                 >
                                     <Link href="/rental-requests">
                                         View All
@@ -213,26 +238,32 @@ export default function DashboardPage() {
                         </div>
 
                         {recentRequests.length === 0 ? (
-                            <div className="rounded-2xl border bg-card p-10 text-center">
-                                <ClipboardList className="mx-auto mb-3 h-8 w-8 text-muted-foreground" />
+                            <div className="relative overflow-hidden rounded-3xl border border-dashed bg-card p-10 text-center">
+                                <div className="pointer-events-none absolute -top-16 left-1/2 h-56 w-56 -translate-x-1/2 rounded-full bg-primary/10 blur-3xl" />
 
-                                <p className="font-medium">
-                                    No rental requests yet
-                                </p>
+                                <div className="relative flex flex-col items-center">
+                                    <div className="flex h-14 w-14 items-center justify-center rounded-full bg-primary/10 text-primary ring-4 ring-primary/10">
+                                        <ClipboardList className="h-6 w-6" />
+                                    </div>
 
-                                <p className="mt-1 text-sm text-muted-foreground">
-                                    Browse properties and submit a rental
-                                    request to get started.
-                                </p>
+                                    <p className="mt-4 font-serif text-lg">
+                                        No rental requests yet
+                                    </p>
 
-                                <Button
-                                    asChild
-                                    className="mt-5 rounded-full"
-                                >
-                                    <Link href="/properties">
-                                        Browse Properties
-                                    </Link>
-                                </Button>
+                                    <p className="mt-1 text-sm text-muted-foreground">
+                                        Browse properties and submit a rental
+                                        request to get started.
+                                    </p>
+
+                                    <Button
+                                        asChild
+                                        className="mt-5 rounded-full"
+                                    >
+                                        <Link href="/properties">
+                                            Browse Properties
+                                        </Link>
+                                    </Button>
+                                </div>
                             </div>
                         ) : (
                             <div className="space-y-3">
@@ -242,23 +273,19 @@ export default function DashboardPage() {
                                         href={`/rental-requests/${request.id}`}
                                         className="block"
                                     >
-                                        <div className="flex flex-col gap-4 rounded-2xl border bg-card p-5 transition-all hover:-translate-y-0.5 hover:shadow-md sm:flex-row sm:items-center sm:justify-between">
-                                            <div className="flex items-center gap-4">
-                                                <div className="h-16 w-20 shrink-0 overflow-hidden rounded-xl bg-muted">
-                                                    {request.property
-                                                        .images?.[0] ? (
-                                                        <img
-                                                            src={
-                                                                request
-                                                                    .property
-                                                                    .images[0]
-                                                            }
-                                                            alt={
-                                                                request
-                                                                    .property
-                                                                    .title
-                                                            }
-                                                            className="h-full w-full object-cover"
+                                        <div className="group relative overflow-hidden rounded-2xl border bg-card p-5 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-[0_20px_45px_-20px_hsl(var(--primary)/0.35)] sm:flex sm:flex-row sm:items-center sm:justify-between">
+                                            <div className="pointer-events-none absolute -right-10 -top-10 h-28 w-28 rounded-full bg-primary/5 transition-transform duration-500 group-hover:scale-125" />
+
+                                            <div className="relative flex items-center gap-4">
+                                                <div className="relative h-16 w-20 shrink-0 overflow-hidden rounded-xl bg-muted">
+                                                    {request.property.images?.[0] ? (
+                                                        <Image
+                                                            src={request.property.images[0]}
+                                                            alt={request.property.title}
+                                                            fill
+                                                            sizes="80px"
+                                                            loading="lazy"
+                                                            className="object-cover"
                                                         />
                                                     ) : (
                                                         <div className="flex h-full items-center justify-center">
@@ -282,7 +309,7 @@ export default function DashboardPage() {
                                                         }
                                                     </p>
 
-                                                    <p className="mt-1 text-sm font-medium">
+                                                    <p className="mt-1 font-serif text-sm">
                                                         ৳
                                                         {request.property.price.toLocaleString()}
                                                         /month
@@ -290,24 +317,24 @@ export default function DashboardPage() {
                                                 </div>
                                             </div>
 
-                                            <div className="flex items-center justify-between gap-3 sm:justify-end">
+                                            <div className="relative mt-4 flex items-center justify-between gap-3 sm:mt-0 sm:justify-end">
                                                 <span
                                                     className={`rounded-full px-3 py-1 text-xs font-medium ${request.status ===
-                                                            "PENDING"
-                                                            ? "bg-yellow-100 text-yellow-700"
+                                                        "PENDING"
+                                                        ? "bg-yellow-100 text-yellow-700"
+                                                        : request.status ===
+                                                            "APPROVED"
+                                                            ? "bg-blue-100 text-blue-700"
                                                             : request.status ===
-                                                                "APPROVED"
-                                                                ? "bg-blue-100 text-blue-700"
+                                                                "ACTIVE"
+                                                                ? "bg-green-100 text-green-700"
                                                                 : request.status ===
-                                                                    "ACTIVE"
-                                                                    ? "bg-green-100 text-green-700"
+                                                                    "COMPLETED"
+                                                                    ? "bg-purple-100 text-purple-700"
                                                                     : request.status ===
-                                                                        "COMPLETED"
-                                                                        ? "bg-purple-100 text-purple-700"
-                                                                        : request.status ===
-                                                                            "REJECTED"
-                                                                            ? "bg-red-100 text-red-700"
-                                                                            : "bg-muted text-muted-foreground"
+                                                                        "REJECTED"
+                                                                        ? "bg-red-100 text-red-700"
+                                                                        : "bg-muted text-muted-foreground"
                                                         }`}
                                                 >
                                                     {request.status}
@@ -323,10 +350,12 @@ export default function DashboardPage() {
                     </section>
 
                     {/* Payment Summary */}
-                    <section className="rounded-2xl border bg-card p-6">
-                        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                    <section className="relative overflow-hidden rounded-2xl border bg-card p-6 shadow-sm">
+                        <div className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-primary/5 blur-3xl" />
+
+                        <div className="relative flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                             <div className="flex items-center gap-4">
-                                <div className="flex h-11 w-11 items-center justify-center rounded-full bg-primary/10 text-primary">
+                                <div className="flex h-11 w-11 items-center justify-center rounded-full bg-primary/10 text-primary ring-4 ring-primary/10">
                                     {completedPayments > 0 ? (
                                         <CheckCircle2 className="h-5 w-5" />
                                     ) : (
@@ -335,7 +364,7 @@ export default function DashboardPage() {
                                 </div>
 
                                 <div>
-                                    <h2 className="font-semibold">
+                                    <h2 className="font-serif text-lg">
                                         Payment History
                                     </h2>
 

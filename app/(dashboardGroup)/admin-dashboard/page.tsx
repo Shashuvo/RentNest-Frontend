@@ -1,13 +1,15 @@
-
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
+import { toast } from "sonner";
 import {
     Ban,
     Building2,
     CheckCircle2,
     Clock3,
     Home,
+    Loader2,
     Plus,
     ShieldCheck,
     Tags,
@@ -70,7 +72,6 @@ export default function AdminDashboardPage() {
         useState<string | null>(null);
 
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
 
     const [updatingUserId, setUpdatingUserId] =
         useState<string | null>(null);
@@ -79,7 +80,6 @@ export default function AdminDashboardPage() {
         const loadDashboardData = async () => {
             try {
                 setLoading(true);
-                setError(null);
 
                 const [
                     usersResult,
@@ -98,11 +98,12 @@ export default function AdminDashboardPage() {
                 setRentals(rentalsResult.data);
                 setCategories(categoriesResult.data);
             } catch (error) {
-                setError(
-                    error instanceof Error
-                        ? error.message
-                        : "Failed to load admin dashboard."
-                );
+                toast.error("Failed to load admin dashboard", {
+                    description:
+                        error instanceof Error
+                            ? error.message
+                            : "Please try again.",
+                });
             } finally {
                 setLoading(false);
             }
@@ -155,7 +156,6 @@ export default function AdminDashboardPage() {
     ) => {
         try {
             setUpdatingUserId(userId);
-            setError(null);
 
             const result = await updateUserStatus(
                 userId,
@@ -172,41 +172,38 @@ export default function AdminDashboardPage() {
                             : user
                     )
                 );
+
+                toast.success(
+                    status === "BANNED"
+                        ? "User banned"
+                        : "User activated"
+                );
             }
         } catch (error) {
-            setError(
-                error instanceof Error
-                    ? error.message
-                    : "Failed to update user status."
-            );
+            toast.error("Failed to update user status", {
+                description:
+                    error instanceof Error
+                        ? error.message
+                        : "Please try again.",
+            });
         } finally {
             setUpdatingUserId(null);
         }
     };
 
+    // CategoryDialog handles its own success/error toasts, so this
+    // simply performs the mutation and lets errors propagate to it.
     const handleCreateCategory = async (
         name: string
     ) => {
-        try {
-            setError(null);
+        const result = await createCategory(name);
 
-            const result = await createCategory(name);
+        setCategories((currentCategories) => [
+            ...currentCategories,
+            result.data,
+        ]);
 
-            setCategories((currentCategories) => [
-                ...currentCategories,
-                result.data,
-            ]);
-
-            setCategoryDialogOpen(false);
-        } catch (error) {
-            setError(
-                error instanceof Error
-                    ? error.message
-                    : "Failed to create category."
-            );
-
-            throw error;
-        }
+        setCategoryDialogOpen(false);
     };
 
     const handleDeleteCategory = async (
@@ -214,7 +211,6 @@ export default function AdminDashboardPage() {
     ) => {
         try {
             setDeletingCategoryId(categoryId);
-            setError(null);
 
             await deleteCategory(categoryId);
 
@@ -224,12 +220,15 @@ export default function AdminDashboardPage() {
                         category.id !== categoryId
                 )
             );
+
+            toast.success("Category deleted");
         } catch (error) {
-            setError(
-                error instanceof Error
-                    ? error.message
-                    : "Failed to delete category."
-            );
+            toast.error("Failed to delete category", {
+                description:
+                    error instanceof Error
+                        ? error.message
+                        : "Please try again.",
+            });
         } finally {
             setDeletingCategoryId(null);
         }
@@ -240,7 +239,6 @@ export default function AdminDashboardPage() {
     ) => {
         try {
             setDeletingPropertyId(propertyId);
-            setError(null);
 
             await deletePropertyForAdmin(propertyId);
 
@@ -250,12 +248,15 @@ export default function AdminDashboardPage() {
                         property.id !== propertyId
                 )
             );
+
+            toast.success("Property deleted");
         } catch (error) {
-            setError(
-                error instanceof Error
-                    ? error.message
-                    : "Failed to delete property."
-            );
+            toast.error("Failed to delete property", {
+                description:
+                    error instanceof Error
+                        ? error.message
+                        : "Please try again.",
+            });
         } finally {
             setDeletingPropertyId(null);
         }
@@ -267,7 +268,6 @@ export default function AdminDashboardPage() {
     ) => {
         try {
             setUpdatingRentalId(requestId);
-            setError(null);
 
             const result =
                 await updateRentalStatusForAdmin(
@@ -285,12 +285,15 @@ export default function AdminDashboardPage() {
                         : rental
                 )
             );
+
+            toast.success("Rental status updated");
         } catch (error) {
-            setError(
-                error instanceof Error
-                    ? error.message
-                    : "Failed to update rental status."
-            );
+            toast.error("Failed to update rental status", {
+                description:
+                    error instanceof Error
+                        ? error.message
+                        : "Please try again.",
+            });
         } finally {
             setUpdatingRentalId(null);
         }
@@ -304,23 +307,29 @@ export default function AdminDashboardPage() {
             />
 
             {loading ? (
-                <div className="rounded-2xl border bg-card p-10 text-center">
-                    <p className="text-sm text-muted-foreground">
-                        Loading admin dashboard...
-                    </p>
-                </div>
-            ) : error ? (
-                <div className="rounded-2xl border border-destructive/20 bg-card p-10 text-center">
-                    <p className="text-sm text-destructive">
-                        {error}
-                    </p>
+                <div className="relative overflow-hidden rounded-3xl border bg-card p-10 text-center">
+                    <div className="pointer-events-none absolute -top-16 left-1/2 h-56 w-56 -translate-x-1/2 rounded-full bg-primary/10 blur-3xl" />
+
+                    <div className="relative flex flex-col items-center gap-3">
+                        <div className="flex h-11 w-11 items-center justify-center rounded-full bg-primary/10 text-primary">
+                            <Loader2 className="h-5 w-5 animate-spin" />
+                        </div>
+
+                        <p className="font-serif text-base">
+                            Loading admin dashboard...
+                        </p>
+
+                        <p className="text-sm text-muted-foreground">
+                            Fetching users, properties, and rentals.
+                        </p>
+                    </div>
                 </div>
             ) : (
                 <>
                     {/* Overview */}
                     <section className="space-y-4">
                         <div>
-                            <h2 className="text-lg font-semibold">
+                            <h2 className="font-serif text-lg">
                                 Overview
                             </h2>
 
@@ -362,54 +371,54 @@ export default function AdminDashboardPage() {
 
                     {/* Rental Overview */}
                     <section className="grid gap-4 sm:grid-cols-3">
-                        <div className="rounded-2xl border bg-card p-5">
+                        <div className="relative overflow-hidden rounded-2xl border bg-card p-5 shadow-sm">
                             <div className="flex items-center gap-3">
-                                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-yellow-500/10 text-yellow-600">
+                                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-yellow-500/10 text-yellow-600 ring-4 ring-yellow-500/10">
                                     <Clock3 className="h-5 w-5" />
                                 </div>
 
                                 <div>
-                                    <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                                    <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
                                         Pending Rentals
                                     </p>
 
-                                    <p className="mt-1 text-2xl font-semibold">
+                                    <p className="mt-1 font-serif text-2xl">
                                         {pendingRentals}
                                     </p>
                                 </div>
                             </div>
                         </div>
 
-                        <div className="rounded-2xl border bg-card p-5">
+                        <div className="relative overflow-hidden rounded-2xl border bg-card p-5 shadow-sm">
                             <div className="flex items-center gap-3">
-                                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-green-500/10 text-green-600">
+                                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-green-500/10 text-green-600 ring-4 ring-green-500/10">
                                     <CheckCircle2 className="h-5 w-5" />
                                 </div>
 
                                 <div>
-                                    <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                                    <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
                                         Active Rentals
                                     </p>
 
-                                    <p className="mt-1 text-2xl font-semibold">
+                                    <p className="mt-1 font-serif text-2xl">
                                         {activeRentals}
                                     </p>
                                 </div>
                             </div>
                         </div>
 
-                        <div className="rounded-2xl border bg-card p-5">
+                        <div className="relative overflow-hidden rounded-2xl border bg-card p-5 shadow-sm">
                             <div className="flex items-center gap-3">
-                                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary">
+                                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary ring-4 ring-primary/10">
                                     <ShieldCheck className="h-5 w-5" />
                                 </div>
 
                                 <div>
-                                    <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                                    <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
                                         Completed Rentals
                                     </p>
 
-                                    <p className="mt-1 text-2xl font-semibold">
+                                    <p className="mt-1 font-serif text-2xl">
                                         {completedRentals}
                                     </p>
                                 </div>
@@ -421,7 +430,7 @@ export default function AdminDashboardPage() {
                     <section className="space-y-4">
                         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
                             <div>
-                                <h2 className="text-lg font-semibold">
+                                <h2 className="font-serif text-lg">
                                     Category Management
                                 </h2>
 
@@ -488,16 +497,22 @@ export default function AdminDashboardPage() {
                                     ))}
                                 </div>
                             ) : (
-                                <div className="p-10 text-center">
-                                    <Tags className="mx-auto mb-3 h-8 w-8 text-muted-foreground" />
+                                <div className="relative overflow-hidden border-dashed p-10 text-center">
+                                    <div className="pointer-events-none absolute -top-16 left-1/2 h-48 w-48 -translate-x-1/2 rounded-full bg-primary/10 blur-3xl" />
 
-                                    <p className="font-medium">
-                                        No categories found
-                                    </p>
+                                    <div className="relative flex flex-col items-center">
+                                        <div className="flex h-14 w-14 items-center justify-center rounded-full bg-primary/10 text-primary ring-4 ring-primary/10">
+                                            <Tags className="h-6 w-6" />
+                                        </div>
 
-                                    <p className="mt-1 text-sm text-muted-foreground">
-                                        Create your first property category.
-                                    </p>
+                                        <p className="mt-4 font-serif text-lg">
+                                            No categories found
+                                        </p>
+
+                                        <p className="mt-1 text-sm text-muted-foreground">
+                                            Create your first property category.
+                                        </p>
+                                    </div>
                                 </div>
                             )}
                         </div>
@@ -573,7 +588,7 @@ export default function AdminDashboardPage() {
                     <section className="space-y-4">
                         <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
                             <div>
-                                <h2 className="text-lg font-semibold">
+                                <h2 className="font-serif text-lg">
                                     User Management
                                 </h2>
 
@@ -589,22 +604,22 @@ export default function AdminDashboardPage() {
 
                         <div className="overflow-hidden rounded-2xl border bg-card">
                             <div className="overflow-x-auto">
-                                <table className="w-full min-w-[800px]">
+                                <table className="w-full min-w-200">
                                     <thead>
                                         <tr className="border-b bg-muted/30">
-                                            <th className="px-5 py-4 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                                            <th className="px-5 py-4 text-left text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
                                                 User
                                             </th>
 
-                                            <th className="px-5 py-4 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                                            <th className="px-5 py-4 text-left text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
                                                 Role
                                             </th>
 
-                                            <th className="px-5 py-4 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                                            <th className="px-5 py-4 text-left text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
                                                 Status
                                             </th>
 
-                                            <th className="px-5 py-4 text-right text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                                            <th className="px-5 py-4 text-right text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
                                                 Action
                                             </th>
                                         </tr>
@@ -618,19 +633,19 @@ export default function AdminDashboardPage() {
                                             >
                                                 <td className="px-5 py-4">
                                                     <div className="flex items-center gap-3">
-                                                        <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full bg-primary/10 text-primary">
+                                                        <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-full bg-primary/10 text-primary">
                                                             {user.photoUrl ? (
+                                                                // eslint-disable-next-line @next/next/no-img-element
                                                                 <img
-                                                                    src={
-                                                                        user.photoUrl
-                                                                    }
-                                                                    alt={
-                                                                        user.name
-                                                                    }
+                                                                    src={user.photoUrl}
+                                                                    alt={user.name}
+                                                                    loading="lazy"
                                                                     className="h-full w-full object-cover"
                                                                 />
                                                             ) : (
-                                                                <UserRound className="h-5 w-5" />
+                                                                <div className="flex h-full w-full items-center justify-center">
+                                                                    <UserRound className="h-5 w-5" />
+                                                                </div>
                                                             )}
                                                         </div>
 
@@ -725,12 +740,18 @@ export default function AdminDashboardPage() {
                             </div>
 
                             {users.length === 0 && (
-                                <div className="p-10 text-center">
-                                    <Users className="mx-auto mb-3 h-8 w-8 text-muted-foreground" />
+                                <div className="relative overflow-hidden p-10 text-center">
+                                    <div className="pointer-events-none absolute -top-16 left-1/2 h-48 w-48 -translate-x-1/2 rounded-full bg-primary/10 blur-3xl" />
 
-                                    <p className="font-medium">
-                                        No users found
-                                    </p>
+                                    <div className="relative flex flex-col items-center">
+                                        <div className="flex h-14 w-14 items-center justify-center rounded-full bg-primary/10 text-primary ring-4 ring-primary/10">
+                                            <Users className="h-6 w-6" />
+                                        </div>
+
+                                        <p className="mt-4 font-serif text-lg">
+                                            No users found
+                                        </p>
+                                    </div>
                                 </div>
                             )}
                         </div>
@@ -740,7 +761,7 @@ export default function AdminDashboardPage() {
                     <section className="space-y-4">
                         <div className="flex items-end justify-between gap-4">
                             <div>
-                                <h2 className="text-lg font-semibold">
+                                <h2 className="font-serif text-lg">
                                     Properties
                                 </h2>
 
@@ -757,30 +778,30 @@ export default function AdminDashboardPage() {
 
                         <div className="overflow-hidden rounded-2xl border bg-card">
                             <div className="overflow-x-auto">
-                                <table className="w-full min-w-[900px]">
+                                <table className="w-full min-w-225">
                                     <thead>
                                         <tr className="border-b bg-muted/30">
-                                            <th className="px-5 py-4 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                                            <th className="px-5 py-4 text-left text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
                                                 Property
                                             </th>
 
-                                            <th className="px-5 py-4 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                                            <th className="px-5 py-4 text-left text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
                                                 Landlord
                                             </th>
 
-                                            <th className="px-5 py-4 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                                            <th className="px-5 py-4 text-left text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
                                                 Category
                                             </th>
 
-                                            <th className="px-5 py-4 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                                            <th className="px-5 py-4 text-left text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
                                                 Price
                                             </th>
 
-                                            <th className="px-5 py-4 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                                            <th className="px-5 py-4 text-left text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
                                                 Status
                                             </th>
 
-                                            <th className="px-5 py-4 text-right text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                                            <th className="px-5 py-4 text-right text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
                                                 Action
                                             </th>
                                         </tr>
@@ -795,10 +816,10 @@ export default function AdminDashboardPage() {
                                                 >
                                                     <td className="px-5 py-4">
                                                         <div className="flex items-center gap-3">
-                                                            <div className="h-12 w-16 shrink-0 overflow-hidden rounded-lg bg-muted">
+                                                            <div className="relative h-12 w-16 shrink-0 overflow-hidden rounded-lg bg-muted">
                                                                 {property
                                                                     .images?.[0] ? (
-                                                                    <img
+                                                                    <Image
                                                                         src={
                                                                             property
                                                                                 .images[0]
@@ -806,7 +827,10 @@ export default function AdminDashboardPage() {
                                                                         alt={
                                                                             property.title
                                                                         }
-                                                                        className="h-full w-full object-cover"
+                                                                        fill
+                                                                        sizes="64px"
+                                                                        loading="lazy"
+                                                                        className="object-cover"
                                                                     />
                                                                 ) : (
                                                                     <div className="flex h-full items-center justify-center">
@@ -859,7 +883,7 @@ export default function AdminDashboardPage() {
                                                         }
                                                     </td>
 
-                                                    <td className="px-5 py-4 font-medium">
+                                                    <td className="px-5 py-4 font-serif">
                                                         ৳
                                                         {property.price.toLocaleString()}
                                                     </td>
@@ -908,12 +932,18 @@ export default function AdminDashboardPage() {
                             </div>
 
                             {properties.length === 0 && (
-                                <div className="p-10 text-center">
-                                    <Building2 className="mx-auto mb-3 h-8 w-8 text-muted-foreground" />
+                                <div className="relative overflow-hidden p-10 text-center">
+                                    <div className="pointer-events-none absolute -top-16 left-1/2 h-48 w-48 -translate-x-1/2 rounded-full bg-primary/10 blur-3xl" />
 
-                                    <p className="font-medium">
-                                        No properties found
-                                    </p>
+                                    <div className="relative flex flex-col items-center">
+                                        <div className="flex h-14 w-14 items-center justify-center rounded-full bg-primary/10 text-primary ring-4 ring-primary/10">
+                                            <Building2 className="h-6 w-6" />
+                                        </div>
+
+                                        <p className="mt-4 font-serif text-lg">
+                                            No properties found
+                                        </p>
+                                    </div>
                                 </div>
                             )}
                         </div>
@@ -923,7 +953,7 @@ export default function AdminDashboardPage() {
                     <section className="space-y-4">
                         <div className="flex items-end justify-between gap-4">
                             <div>
-                                <h2 className="text-lg font-semibold">
+                                <h2 className="font-serif text-lg">
                                     Rental Activity
                                 </h2>
 
@@ -943,27 +973,27 @@ export default function AdminDashboardPage() {
                                 <table className="w-full min-w-225">
                                     <thead>
                                         <tr className="border-b bg-muted/30">
-                                            <th className="px-5 py-4 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                                            <th className="px-5 py-4 text-left text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
                                                 Tenant
                                             </th>
 
-                                            <th className="px-5 py-4 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                                            <th className="px-5 py-4 text-left text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
                                                 Property
                                             </th>
 
-                                            <th className="px-5 py-4 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                                            <th className="px-5 py-4 text-left text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
                                                 Status
                                             </th>
 
-                                            <th className="px-5 py-4 text-right text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                                            <th className="px-5 py-4 text-right text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
                                                 Action
                                             </th>
 
-                                            <th className="px-5 py-4 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                                            <th className="px-5 py-4 text-left text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
                                                 Payment
                                             </th>
 
-                                            <th className="px-5 py-4 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                                            <th className="px-5 py-4 text-left text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
                                                 Date
                                             </th>
                                         </tr>
@@ -1154,12 +1184,18 @@ export default function AdminDashboardPage() {
                             </div>
 
                             {rentals.length === 0 && (
-                                <div className="p-10 text-center">
-                                    <Home className="mx-auto mb-3 h-8 w-8 text-muted-foreground" />
+                                <div className="relative overflow-hidden p-10 text-center">
+                                    <div className="pointer-events-none absolute -top-16 left-1/2 h-48 w-48 -translate-x-1/2 rounded-full bg-primary/10 blur-3xl" />
 
-                                    <p className="font-medium">
-                                        No rental activity found
-                                    </p>
+                                    <div className="relative flex flex-col items-center">
+                                        <div className="flex h-14 w-14 items-center justify-center rounded-full bg-primary/10 text-primary ring-4 ring-primary/10">
+                                            <Home className="h-6 w-6" />
+                                        </div>
+
+                                        <p className="mt-4 font-serif text-lg">
+                                            No rental activity found
+                                        </p>
+                                    </div>
                                 </div>
                             )}
                         </div>
@@ -1169,4 +1205,3 @@ export default function AdminDashboardPage() {
         </div>
     );
 }
-

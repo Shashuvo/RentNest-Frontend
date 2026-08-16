@@ -48,7 +48,6 @@ export default function ProfileForm({
     const {
         register,
         handleSubmit,
-        setError,
         formState: { errors, isSubmitting },
     } = useForm<UpdateProfileFormValues>({
         resolver: zodResolver(updateProfileSchema),
@@ -109,12 +108,6 @@ export default function ProfileForm({
         const result = await updateMe(values);
 
         if (!result.success) {
-            setError("root", {
-                message:
-                    result.message ||
-                    "Failed to update profile.",
-            });
-
             toast.error(
                 result.message ||
                 "Failed to update profile."
@@ -132,13 +125,13 @@ export default function ProfileForm({
             className="space-y-6"
         >
             <div className="flex items-center gap-4">
-                <Avatar className="h-20 w-20">
+                <Avatar className="h-20 w-20 ring-4 ring-primary/10">
                     <AvatarImage
                         src={selectedImage ?? user.photoUrl ?? ""}
                         alt={user.name}
                     />
 
-                    <AvatarFallback className="text-lg">
+                    <AvatarFallback className="bg-primary/10 font-serif text-lg text-primary">
                         {user.name
                             .split(" ")
                             .map((name: string) => name[0])
@@ -150,7 +143,7 @@ export default function ProfileForm({
 
                 <div className="space-y-2">
                     <div>
-                        <h2 className="font-medium">
+                        <h2 className="font-serif text-base tracking-tight">
                             {user.name}
                         </h2>
 
@@ -183,6 +176,7 @@ export default function ProfileForm({
                             size="sm"
                             disabled={isUploading}
                             onClick={() => fileInputRef.current?.click()}
+                            className="rounded-full border-primary/20 text-primary hover:bg-primary hover:text-primary-foreground"
                         >
                             Change Photo
                         </Button>
@@ -193,6 +187,7 @@ export default function ProfileForm({
                                 size="sm"
                                 disabled={isUploading}
                                 onClick={handleProfileImageUpload}
+                                className="rounded-full shadow-sm transition-shadow hover:shadow-[0_12px_30px_-10px_hsl(var(--primary)/0.5)]"
                             >
                                 {isUploading ? "Uploading..." : "Save Photo"}
                             </Button>
@@ -204,7 +199,7 @@ export default function ProfileForm({
             <div className="space-y-2">
                 <label
                     htmlFor="name"
-                    className="text-sm font-medium"
+                    className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground"
                 >
                     Name
                 </label>
@@ -213,6 +208,7 @@ export default function ProfileForm({
                     id="name"
                     placeholder="Your name"
                     {...register("name")}
+                    className="h-11 rounded-full border border-border bg-background text-sm shadow-sm transition-colors focus-visible:border-primary focus-visible:ring-1 focus-visible:ring-primary"
                 />
 
                 {errors.name && (
@@ -225,7 +221,7 @@ export default function ProfileForm({
             <div className="space-y-2">
                 <label
                     htmlFor="email"
-                    className="text-sm font-medium"
+                    className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground"
                 >
                     Email
                 </label>
@@ -234,6 +230,7 @@ export default function ProfileForm({
                     id="email"
                     value={user.email}
                     disabled
+                    className="h-11 rounded-full border border-border bg-muted/40 text-sm"
                 />
 
                 <p className="text-xs text-muted-foreground">
@@ -244,7 +241,7 @@ export default function ProfileForm({
             <div className="space-y-2">
                 <label
                     htmlFor="phone"
-                    className="text-sm font-medium"
+                    className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground"
                 >
                     Phone
                 </label>
@@ -253,6 +250,7 @@ export default function ProfileForm({
                     id="phone"
                     placeholder="Your phone number"
                     {...register("phone")}
+                    className="h-11 rounded-full border border-border bg-background text-sm shadow-sm transition-colors focus-visible:border-primary focus-visible:ring-1 focus-visible:ring-primary"
                 />
 
                 {errors.phone && (
@@ -265,7 +263,7 @@ export default function ProfileForm({
             <div className="space-y-2">
                 <label
                     htmlFor="address"
-                    className="text-sm font-medium"
+                    className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground"
                 >
                     Address
                 </label>
@@ -273,7 +271,7 @@ export default function ProfileForm({
                 <Textarea
                     id="address"
                     placeholder="Your address"
-                    className="min-h-24 resize-none"
+                    className="min-h-24 resize-none rounded-2xl border border-border bg-background text-sm shadow-sm transition-colors focus-visible:border-primary focus-visible:ring-1 focus-visible:ring-primary"
                     {...register("address")}
                 />
 
@@ -284,15 +282,10 @@ export default function ProfileForm({
                 )}
             </div>
 
-            {errors.root && (
-                <p className="text-sm text-destructive">
-                    {errors.root.message}
-                </p>
-            )}
-
             <Button
                 type="submit"
                 disabled={isSubmitting}
+                className="rounded-full shadow-sm transition-shadow hover:shadow-[0_12px_30px_-10px_hsl(var(--primary)/0.5)]"
             >
                 {isSubmitting
                     ? "Saving..."

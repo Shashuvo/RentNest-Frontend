@@ -46,7 +46,7 @@ export default function PayNowButton({
     return (
         <Button
             size="lg"
-            className="w-full sm:w-auto"
+            className="w-full rounded-full shadow-sm transition-shadow hover:shadow-[0_12px_30px_-10px_hsl(var(--primary)/0.5)] sm:w-auto"
             onClick={handlePayment}
             disabled={disabled || isPending}
         >

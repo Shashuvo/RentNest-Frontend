@@ -61,10 +61,16 @@ const socialLinks = [
 
 export function Footer() {
     return (
-        <footer className="border-t bg-muted/30">
-            <div className="mx-auto max-w-full px-10">
+        <footer className="relative overflow-hidden border-t border-border bg-muted/30">
+            {/* Ambient glow accent */}
+            <div
+                className="pointer-events-none absolute -left-32 top-0 h-96 w-96 rounded-full bg-primary/10 blur-3xl"
+                aria-hidden="true"
+            />
+
+            <div className="relative mx-auto max-w-full px-10">
                 {/* Main footer */}
-                <div className="grid gap-12 py-14 sm:py-16 lg:grid-cols-[1.5fr_1fr_1fr_1.2fr]">
+                <div className="grid gap-8 py-10 sm:py-12 lg:grid-cols-[1.5fr_1fr_1fr_1.2fr]">
                     {/* Brand */}
                     <div className="max-w-sm">
                         <Link
@@ -78,19 +84,19 @@ export function Footer() {
                                 />
                             </span>
 
-                            <span className="font-serif text-xl tracking-tight">
+                            <span className="font-serif text-xl font-bold tracking-tight">
                                 Rent<span className="text-primary">Nest</span>
                             </span>
                         </Link>
 
-                        <p className="mt-5 text-sm leading-6 text-muted-foreground">
+                        <p className="mt-3.5 text-sm leading-6 text-muted-foreground">
                             A simpler way to discover homes, connect with
                             landlords, and manage your rental journey from
                             one place.
                         </p>
 
                         {/* Social links */}
-                        <div className="mt-6 flex flex-wrap items-center gap-2">
+                        <div className="mt-4 flex flex-wrap items-center gap-2">
                             {socialLinks.map((social) => {
                                 const Icon = social.icon;
 
@@ -99,7 +105,7 @@ export function Footer() {
                                         key={social.label}
                                         href={social.href}
                                         aria-label={social.label}
-                                        className="flex size-9 items-center justify-center rounded-full border bg-background text-muted-foreground transition-all duration-200 hover:border-primary/30 hover:bg-primary/10 hover:text-primary hover:-translate-y-0.5"
+                                        className="flex size-9 items-center justify-center rounded-full border border-border bg-card text-muted-foreground shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/30 hover:bg-primary/10 hover:text-primary"
                                     >
                                         <Icon className="size-4" />
                                     </Link>
@@ -110,11 +116,11 @@ export function Footer() {
 
                     {/* Explore */}
                     <div>
-                        <h3 className="text-sm font-semibold">
+                        <h3 className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
                             Explore
                         </h3>
 
-                        <ul className="mt-5 space-y-3">
+                        <ul className="mt-3 space-y-2">
                             {footerLinks.Explore.map((link) => (
                                 <li key={link.href}>
                                     <Link
@@ -130,11 +136,11 @@ export function Footer() {
 
                     {/* Account */}
                     <div>
-                        <h3 className="text-sm font-semibold">
+                        <h3 className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
                             Account
                         </h3>
 
-                        <ul className="mt-5 space-y-3">
+                        <ul className="mt-3 space-y-2">
                             {footerLinks.Account.map((link) => (
                                 <li key={link.href}>
                                     <Link
@@ -149,33 +155,33 @@ export function Footer() {
                     </div>
 
                     {/* CTA */}
-                    <div>
-                        <div className="flex size-10 items-center justify-center rounded-xl border bg-background">
-                            <Building2 className="size-5" />
+                    <div className="rounded-2xl border border-primary/15 bg-card p-4 shadow-sm">
+                        <div className="flex size-9 items-center justify-center rounded-full bg-primary/10 text-primary ring-4 ring-primary/5">
+                            <Building2 className="size-4.5" />
                         </div>
 
-                        <h3 className="mt-4 text-lg font-semibold tracking-tight">
+                        <h3 className="mt-3 font-serif text-base tracking-tight text-foreground">
                             Looking for a new home?
                         </h3>
 
-                        <p className="mt-2 text-sm leading-6 text-muted-foreground">
+                        <p className="mt-1.5 text-sm leading-6 text-muted-foreground">
                             Explore properties and find a place that feels
                             right for you.
                         </p>
 
                         <Link
                             href="/properties"
-                            className="mt-5 inline-flex items-center gap-1.5 text-sm font-medium text-primary transition-colors hover:text-primary/80"
+                            className="group mt-3 inline-flex items-center gap-1.5 text-sm font-medium text-primary transition-colors hover:text-primary/80"
                         >
                             Browse properties
-                            <ArrowUpRight className="size-4" />
+                            <ArrowUpRight className="size-4 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                         </Link>
                     </div>
                 </div>
 
                 {/* Bottom */}
-                <div className="flex flex-col gap-5 border-t py-6 sm:flex-row sm:items-center sm:justify-between">
-                    <div className="space-y-1">
+                <div className="flex flex-col gap-3 border-t border-border py-4 sm:flex-row sm:items-center sm:justify-between">
+                    <div className="space-y-0.5">
                         <p className="text-xs text-muted-foreground">
                             © {new Date().getFullYear()} RentNest. All rights
                             reserved.
@@ -184,10 +190,10 @@ export function Footer() {
                         <p className="text-xs text-muted-foreground">
                             Built with care by{" "}
                             <Link
-                                href="#"
+                                href="https://shahariat.netlify.app/"
                                 className="font-medium text-foreground transition-colors hover:text-primary"
                             >
-                                MD. Shahariat Hossen Shuvo
+                                MD. Shahariat Hossen
                             </Link>
                         </p>
                     </div>
@@ -220,4 +226,3 @@ export function Footer() {
         </footer>
     );
 }
-

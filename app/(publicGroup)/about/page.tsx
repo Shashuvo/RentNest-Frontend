@@ -1,4 +1,3 @@
-
 import Link from "next/link";
 import {
     ArrowRight,
@@ -6,6 +5,7 @@ import {
     CheckCircle2,
     Heart,
     ShieldCheck,
+    Sparkles,
     Users,
 } from "lucide-react";
 
@@ -45,18 +45,28 @@ export default function AboutPage() {
     return (
         <main className="min-h-screen bg-background">
             {/* Hero */}
-            <section className="border-b">
-                <div className="mx-auto max-w-6xl px-6 py-20 sm:py-28">
+            <section className="relative overflow-hidden border-b border-border">
+                {/* Ambient glow accent */}
+                <div
+                    className="pointer-events-none absolute -left-32 -top-24 h-96 w-96 rounded-full bg-primary/10 blur-3xl"
+                    aria-hidden="true"
+                />
+                <div
+                    className="pointer-events-none absolute -right-40 top-20 h-80 w-80 rounded-full bg-accent/10 blur-3xl"
+                    aria-hidden="true"
+                />
+
+                <div className="relative mx-auto max-w-6xl px-6 py-20 sm:py-28">
                     <div className="max-w-3xl">
-                        <div className="mb-5 inline-flex items-center gap-2 rounded-full border bg-muted/50 px-4 py-2 text-sm text-muted-foreground">
-                            <Building2 className="h-4 w-4" />
+                        <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-primary/15 bg-card px-3 py-1.5 text-xs font-medium tracking-wide text-primary shadow-sm">
+                            <Building2 className="h-3.5 w-3.5" />
                             About RentNest
                         </div>
 
-                        <h1 className="font-serif text-4xl leading-tight tracking-tight sm:text-5xl lg:text-6xl">
+                        <h1 className="font-serif text-4xl leading-tight tracking-[-0.03em] text-foreground sm:text-5xl lg:text-6xl">
                             Making the rental journey
                             <br />
-                            <span className="text-muted-foreground">
+                            <span className="bg-linear-to-r from-primary to-primary/60 bg-clip-text text-transparent">
                                 simpler for everyone.
                             </span>
                         </h1>
@@ -75,11 +85,12 @@ export default function AboutPage() {
             <section>
                 <div className="mx-auto grid max-w-6xl gap-12 px-6 py-20 sm:py-24 lg:grid-cols-2 lg:items-center">
                     <div>
-                        <p className="text-sm font-medium uppercase tracking-widest text-muted-foreground">
+                        <div className="inline-flex items-center gap-2 rounded-full border border-primary/15 bg-card px-3 py-1.5 text-xs font-medium tracking-wide text-primary shadow-sm">
+                            <Sparkles className="h-3.5 w-3.5" />
                             Our Mission
-                        </p>
+                        </div>
 
-                        <h2 className="mt-3 font-serif text-3xl tracking-tight sm:text-4xl">
+                        <h2 className="mt-4 font-serif text-3xl tracking-[-0.03em] text-foreground sm:text-4xl">
                             A better way to rent and manage properties
                         </h2>
 
@@ -98,18 +109,23 @@ export default function AboutPage() {
                         </p>
                     </div>
 
-                    <div className="rounded-3xl border bg-muted/30 p-8 sm:p-10">
-                        <div className="flex h-12 w-12 items-center justify-center rounded-xl border bg-background">
+                    <div className="relative overflow-hidden rounded-3xl border border-border bg-card p-8 shadow-sm sm:p-10">
+                        <div
+                            className="pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full bg-primary/5"
+                            aria-hidden="true"
+                        />
+
+                        <div className="relative flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-primary ring-4 ring-primary/5">
                             <Building2 className="h-6 w-6" />
                         </div>
 
-                        <h3 className="mt-6 text-xl font-semibold">
+                        <h3 className="relative mt-6 font-serif text-xl tracking-tight text-foreground">
                             One platform. Two experiences.
                         </h3>
 
-                        <div className="mt-6 space-y-4">
-                            <div className="rounded-2xl border bg-background p-5">
-                                <p className="font-medium">For Tenants</p>
+                        <div className="relative mt-6 space-y-4">
+                            <div className="rounded-2xl border border-border bg-background p-5">
+                                <p className="font-medium text-foreground">For Tenants</p>
                                 <p className="mt-1 text-sm leading-6 text-muted-foreground">
                                     Find properties, send rental requests,
                                     make payments, and manage your rental
@@ -117,8 +133,8 @@ export default function AboutPage() {
                                 </p>
                             </div>
 
-                            <div className="rounded-2xl border bg-background p-5">
-                                <p className="font-medium">For Landlords</p>
+                            <div className="rounded-2xl border border-border bg-background p-5">
+                                <p className="font-medium text-foreground">For Landlords</p>
                                 <p className="mt-1 text-sm leading-6 text-muted-foreground">
                                     List properties, review rental requests,
                                     and manage your properties and rentals.
@@ -130,14 +146,20 @@ export default function AboutPage() {
             </section>
 
             {/* What RentNest Offers */}
-            <section className="border-y bg-muted/30">
-                <div className="mx-auto max-w-6xl px-6 py-20 sm:py-24">
-                    <div className="max-w-2xl">
-                        <p className="text-sm font-medium uppercase tracking-widest text-muted-foreground">
-                            The Platform
-                        </p>
+            <section className="relative overflow-hidden border-y border-border bg-card/40">
+                <div
+                    className="pointer-events-none absolute left-1/2 top-0 h-96 w-96 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/10 blur-3xl"
+                    aria-hidden="true"
+                />
 
-                        <h2 className="mt-3 font-serif text-3xl tracking-tight sm:text-4xl">
+                <div className="relative mx-auto max-w-6xl px-6 py-20 sm:py-24">
+                    <div className="max-w-2xl">
+                        <div className="inline-flex items-center gap-2 rounded-full border border-primary/15 bg-card px-3 py-1.5 text-xs font-medium tracking-wide text-primary shadow-sm">
+                            <ShieldCheck className="h-3.5 w-3.5" />
+                            The Platform
+                        </div>
+
+                        <h2 className="mt-4 font-serif text-3xl tracking-[-0.03em] text-foreground sm:text-4xl">
                             Everything you need for renting
                         </h2>
 
@@ -153,11 +175,13 @@ export default function AboutPage() {
                         {features.map((feature) => (
                             <div
                                 key={feature}
-                                className="flex items-center gap-3 rounded-2xl border bg-background p-5"
+                                className="flex items-center gap-3 rounded-2xl border border-border bg-background p-5 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-[0_16px_40px_-20px_hsl(var(--primary)/0.35)]"
                             >
-                                <CheckCircle2 className="h-5 w-5 shrink-0" />
+                                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+                                    <CheckCircle2 className="h-4 w-4" />
+                                </span>
 
-                                <span className="text-sm font-medium">
+                                <span className="text-sm font-medium text-foreground">
                                     {feature}
                                 </span>
                             </div>
@@ -167,14 +191,20 @@ export default function AboutPage() {
             </section>
 
             {/* Values */}
-            <section>
-                <div className="mx-auto max-w-6xl px-6 py-20 sm:py-24">
-                    <div className="mx-auto max-w-2xl text-center">
-                        <p className="text-sm font-medium uppercase tracking-widest text-muted-foreground">
-                            What We Believe
-                        </p>
+            <section className="relative overflow-hidden">
+                <div
+                    className="pointer-events-none absolute right-0 top-0 h-96 w-96 -translate-y-1/3 translate-x-1/3 rounded-full bg-primary/10 blur-3xl"
+                    aria-hidden="true"
+                />
 
-                        <h2 className="mt-3 font-serif text-3xl tracking-tight sm:text-4xl">
+                <div className="relative mx-auto max-w-6xl px-6 py-20 sm:py-24">
+                    <div className="mx-auto max-w-2xl text-center">
+                        <div className="inline-flex items-center gap-2 rounded-full border border-primary/15 bg-card px-3 py-1.5 text-xs font-medium tracking-wide text-primary shadow-sm">
+                            <Heart className="h-3.5 w-3.5" />
+                            What We Believe
+                        </div>
+
+                        <h2 className="mt-4 font-serif text-3xl tracking-[-0.03em] text-foreground sm:text-4xl">
                             Designed around better experiences
                         </h2>
 
@@ -191,19 +221,26 @@ export default function AboutPage() {
                             return (
                                 <div
                                     key={value.title}
-                                    className="rounded-2xl border p-7"
+                                    className="group relative overflow-hidden rounded-3xl border border-border bg-card p-7 shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-primary/30 hover:shadow-[0_24px_60px_-24px_hsl(var(--primary)/0.4)]"
                                 >
-                                    <div className="flex h-11 w-11 items-center justify-center rounded-xl border bg-muted/50">
+                                    <div
+                                        className="pointer-events-none absolute -right-10 -top-10 h-28 w-28 rounded-full bg-primary/5 transition-transform duration-500 group-hover:scale-150"
+                                        aria-hidden="true"
+                                    />
+
+                                    <div className="relative flex h-11 w-11 items-center justify-center rounded-full bg-primary/10 text-primary ring-4 ring-primary/5 transition-all duration-300 group-hover:bg-primary group-hover:text-primary-foreground group-hover:ring-primary/10">
                                         <Icon className="h-5 w-5" />
                                     </div>
 
-                                    <h3 className="mt-6 text-lg font-semibold">
+                                    <h3 className="relative mt-6 font-serif text-lg tracking-tight text-foreground">
                                         {value.title}
                                     </h3>
 
-                                    <p className="mt-2 text-sm leading-6 text-muted-foreground">
+                                    <p className="relative mt-2 text-sm leading-6 text-muted-foreground">
                                         {value.description}
                                     </p>
+
+                                    <div className="absolute bottom-0 left-0 h-1 w-0 rounded-full bg-primary transition-all duration-500 group-hover:w-full" />
                                 </div>
                             );
                         })}
@@ -212,40 +249,45 @@ export default function AboutPage() {
             </section>
 
             {/* CTA */}
-            <section className="border-t bg-muted/30">
-                <div className="mx-auto max-w-6xl px-6 py-20 sm:py-28">
-                    <div className="rounded-3xl border bg-background px-6 py-14 text-center sm:px-12">
-                        <h2 className="font-serif text-3xl tracking-tight sm:text-4xl">
-                            Find your place with RentNest
-                        </h2>
+            <section className="border-t border-border bg-card/40 px-6 py-20 sm:py-28">
+                <div className="mx-auto max-w-6xl">
+                    <div className="relative overflow-hidden rounded-[2.5rem] bg-primary px-6 py-14 text-center text-primary-foreground shadow-[0_40px_100px_-30px_hsl(var(--primary)/0.6)] sm:px-12">
+                        <div className="pointer-events-none absolute -left-20 -top-20 h-64 w-64 rounded-full bg-primary-foreground/10 blur-3xl" />
+                        <div className="pointer-events-none absolute -bottom-24 -right-16 h-72 w-72 rounded-full bg-primary-foreground/10 blur-3xl" />
 
-                        <p className="mx-auto mt-4 max-w-xl leading-7 text-muted-foreground">
-                            Explore available properties or create an
-                            account and start your rental journey today.
-                        </p>
+                        <div className="relative">
+                            <h2 className="font-serif text-3xl tracking-[-0.03em] sm:text-4xl">
+                                Find your place with RentNest
+                            </h2>
 
-                        <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
-                            <Button
-                                asChild
-                                size="lg"
-                                className="rounded-full px-7"
-                            >
-                                <Link href="/properties">
-                                    Browse Properties
-                                    <ArrowRight className="ml-2 h-4 w-4" />
-                                </Link>
-                            </Button>
+                            <p className="mx-auto mt-4 max-w-xl leading-7 text-primary-foreground/80">
+                                Explore available properties or create an
+                                account and start your rental journey today.
+                            </p>
 
-                            <Button
-                                asChild
-                                variant="outline"
-                                size="lg"
-                                className="rounded-full px-7"
-                            >
-                                <Link href="/register">
-                                    Create an Account
-                                </Link>
-                            </Button>
+                            <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
+                                <Button
+                                    asChild
+                                    size="lg"
+                                    className="group rounded-full bg-background px-7 text-foreground shadow-lg hover:bg-background/90"
+                                >
+                                    <Link href="/properties">
+                                        Browse Properties
+                                        <ArrowRight className="ml-2 h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5" />
+                                    </Link>
+                                </Button>
+
+                                <Button
+                                    asChild
+                                    variant="outline"
+                                    size="lg"
+                                    className="rounded-full border-primary-foreground/30 bg-transparent px-7 text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground"
+                                >
+                                    <Link href="/register">
+                                        Create an Account
+                                    </Link>
+                                </Button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -253,4 +295,3 @@ export default function AboutPage() {
         </main>
     );
 }
-

@@ -72,108 +72,125 @@ export default function ReviewDialog({
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button>
+                <Button className="rounded-full shadow-sm transition-shadow hover:shadow-[0_12px_30px_-10px_hsl(var(--primary)/0.5)]">
                     <Star className="mr-2 h-4 w-4" />
                     Leave a Review
                 </Button>
             </DialogTrigger>
 
-            <DialogContent className="sm:max-w-md">
-                <DialogHeader>
-                    <DialogTitle>Leave a Review</DialogTitle>
+            <DialogContent className="overflow-hidden rounded-3xl border border-border shadow-[0_24px_70px_-28px_hsl(var(--primary)/0.35)] sm:max-w-md">
+                <div className="relative">
+                    {/* Ambient glow accent */}
+                    <div
+                        className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-primary/10 blur-3xl"
+                        aria-hidden="true"
+                    />
 
-                    <DialogDescription>
-                        Share your experience with this property.
-                    </DialogDescription>
-                </DialogHeader>
-
-                <div className="space-y-6 py-2">
-                    {/* Rating */}
-                    <div>
-                        <p className="mb-3 text-sm font-medium">
-                            Your Rating
-                        </p>
-
-                        <div className="flex gap-2">
-                            {[1, 2, 3, 4, 5].map((value) => (
-                                <button
-                                    key={value}
-                                    type="button"
-                                    onClick={() =>
-                                        setRating(value)
-                                    }
-                                    className="rounded-md p-1 transition-colors hover:bg-muted"
-                                    aria-label={`${value} star${value > 1 ? "s" : ""}`}
-                                >
-                                    <Star
-                                        className={`size-7 ${value <= rating
-                                                ? "fill-yellow-400 text-yellow-400"
-                                                : "text-muted-foreground"
-                                            }`}
-                                    />
-                                </button>
-                            ))}
+                    <DialogHeader className="relative">
+                        <div className="mb-1 flex h-11 w-11 items-center justify-center rounded-full bg-primary/10 text-primary ring-4 ring-primary/10">
+                            <Star className="h-5 w-5" />
                         </div>
 
-                        {rating > 0 && (
-                            <p className="mt-2 text-xs text-muted-foreground">
-                                {rating} out of 5
+                        <DialogTitle className="font-serif text-lg tracking-tight">
+                            Leave a Review
+                        </DialogTitle>
+
+                        <DialogDescription>
+                            Share your experience with this property.
+                        </DialogDescription>
+                    </DialogHeader>
+
+                    <div className="relative space-y-6 py-2">
+                        {/* Rating */}
+                        <div>
+                            <p className="mb-3 text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+                                Your Rating
                             </p>
-                        )}
+
+                            <div className="flex gap-2">
+                                {[1, 2, 3, 4, 5].map((value) => (
+                                    <button
+                                        key={value}
+                                        type="button"
+                                        onClick={() =>
+                                            setRating(value)
+                                        }
+                                        className="rounded-full p-1.5 transition-colors hover:bg-primary/10"
+                                        aria-label={`${value} star${value > 1 ? "s" : ""}`}
+                                    >
+                                        <Star
+                                            className={`size-7 ${value <= rating
+                                                ? "fill-yellow-400 text-yellow-400"
+                                                : "text-muted-foreground"
+                                                }`}
+                                        />
+                                    </button>
+                                ))}
+                            </div>
+
+                            {rating > 0 && (
+                                <p className="mt-2 text-xs text-muted-foreground">
+                                    {rating} out of 5
+                                </p>
+                            )}
+                        </div>
+
+                        {/* Comment */}
+                        <div>
+                            <p className="mb-2 text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+                                Your Review
+                            </p>
+
+                            <Textarea
+                                value={comment}
+                                onChange={(event) =>
+                                    setComment(event.target.value)
+                                }
+                                placeholder="Tell us about your experience..."
+                                maxLength={500}
+                                rows={5}
+                                className="resize-none rounded-2xl border border-border bg-background text-sm shadow-sm transition-colors focus-visible:border-primary focus-visible:ring-1 focus-visible:ring-primary"
+                            />
+
+                            <p className="mt-1 text-right text-xs text-muted-foreground">
+                                {comment.length}/500
+                            </p>
+                        </div>
                     </div>
 
-                    {/* Comment */}
-                    <div>
-                        <p className="mb-2 text-sm font-medium">
-                            Your Review
-                        </p>
+                    <DialogFooter className="relative">
+                        <Button
+                            variant="outline"
+                            onClick={() => setOpen(false)}
+                            disabled={isPending}
+                            className="rounded-full border-primary/20 text-primary hover:bg-primary hover:text-primary-foreground"
+                        >
+                            Cancel
+                        </Button>
 
-                        <Textarea
-                            value={comment}
-                            onChange={(event) =>
-                                setComment(event.target.value)
+                        <Button
+                            onClick={handleSubmit}
+                            disabled={
+                                isPending ||
+                                rating === 0 ||
+                                !comment.trim()
                             }
-                            placeholder="Tell us about your experience..."
-                            maxLength={500}
-                            rows={5}
-                        />
-
-                        <p className="mt-1 text-right text-xs text-muted-foreground">
-                            {comment.length}/500
-                        </p>
-                    </div>
+                            className="rounded-full shadow-sm transition-shadow hover:shadow-[0_12px_30px_-10px_hsl(var(--primary)/0.5)]"
+                        >
+                            {isPending ? (
+                                <>
+                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                    Submitting...
+                                </>
+                            ) : (
+                                <>
+                                    <Star className="mr-2 h-4 w-4" />
+                                    Submit Review
+                                </>
+                            )}
+                        </Button>
+                    </DialogFooter>
                 </div>
-
-                <DialogFooter>
-                    <Button
-                        variant="outline"
-                        onClick={() => setOpen(false)}
-                        disabled={isPending}
-                    >
-                        Cancel
-                    </Button>
-
-                    <Button
-                        onClick={handleSubmit}
-                        disabled={
-                            isPending ||
-                            rating === 0 ||
-                            !comment.trim()
-                        }
-                    >
-                        {isPending ? (
-                            <>
-                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                Submitting...
-                            </>
-                        ) : (
-                            <>
-                                <Star className="mr-2 h-4 w-4" />
-                                Submit Review
-                            </>
-                        )}
-                    </Button>
-                </DialogFooter>
             </DialogContent>
         </Dialog>
     );
