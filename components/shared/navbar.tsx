@@ -47,25 +47,38 @@ const getUserMenuItems = (role?: string) => [
         icon: LayoutDashboard,
         action: "dashboard",
     },
+
+    ...(role === "TENANT"
+        ? [
+            {
+                label: "Rental Requests",
+                icon: ClipboardList,
+                action: "rental-requests",
+            },
+            {
+                label: "Payment",
+                icon: CreditCard,
+                action: "payment",
+            },
+        ]
+        : []),
+
+    ...(role === "LANDLORD"
+        ? [
+            {
+                label: "Rental Requests",
+                icon: ClipboardList,
+                action: "landlord-requests",
+            },
+        ]
+        : []),
+
     {
         label: "Profile",
         icon: User,
         action: "profile",
     },
-    ...(role === "TENANT" ? [
-        {
-            label: "Payment",
-            icon: CreditCard,
-            action: "payment",
-        },
-    ] : []),
-    ...(role === "LANDLORD" ? [
-        {
-            label: "Rental Requests",
-            icon: ClipboardList,
-            action: "rental-requests",
-        },
-    ] : []),
+
     {
         label: "Settings",
         icon: Settings,
@@ -96,7 +109,11 @@ export function Navbar({ user }: NavbarProps) {
         }
 
         if (action === "rental-requests") {
-            router.push("/landlord-requests");
+            router.push("/rental-requests"); 
+        }
+
+        if (action === "landlord-requests") {
+            router.push("/landlord-requests"); 
         }
 
         if (action === "payment") {

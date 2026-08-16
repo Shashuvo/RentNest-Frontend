@@ -18,6 +18,7 @@ import { Button } from "@/components/ui/button"
 import type { Property, Review } from "@/lib/types"
 import { getPropertyById, getPropertyReviews } from "../../_actions/propertyAction"
 import { PropertyGallery } from "../../_components/PropertyGallery"
+import RequestRentalDialog from "@/app/(dashboardGroup)/_components/tenant/RequestRentalDialog"
 
 type PageProps = {
     params: Promise<{ id: string }>
@@ -103,8 +104,8 @@ export default async function PropertyDetailPage({ params }: PageProps) {
                                 </p>
                                 <span
                                     className={`mt-2 inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium ${property.isAvailable
-                                            ? "bg-emerald-500/10 text-emerald-600"
-                                            : "bg-muted text-muted-foreground"
+                                        ? "bg-emerald-500/10 text-emerald-600"
+                                        : "bg-muted text-muted-foreground"
                                         }`}
                                 >
                                     <span
@@ -257,7 +258,7 @@ export default async function PropertyDetailPage({ params }: PageProps) {
                                 Listed by
                             </p>
 
-                            <div className="mt-3 flex items-center gap-3">
+                            <div className="my-3 flex items-center gap-3">
                                 <div className="flex size-12 items-center justify-center overflow-hidden rounded-full bg-muted ring-2 ring-primary/10">
                                     {property.landlord?.photoUrl ? (
                                         <Image
@@ -276,16 +277,30 @@ export default async function PropertyDetailPage({ params }: PageProps) {
                                     <p className="text-sm font-semibold text-foreground">
                                         {property.landlord?.name ?? "Landlord"}
                                     </p>
+
                                     <p className="text-xs text-muted-foreground">
                                         {property.landlord?.email}
                                     </p>
                                 </div>
                             </div>
 
-                            <Button size="lg" className="mt-6 w-full rounded-full shadow-sm">
+                            {/* Request to Rent */}
+                            <RequestRentalDialog
+                                propertyId={property.id}
+                                propertyTitle={property.title}
+                                isAvailable={property.isAvailable}
+                            />
+
+                            {/* Contact Landlord */}
+                            <Button
+                                size="lg"
+                                variant="outline"
+                                className="mt-3 w-full rounded-full"
+                            >
                                 Contact landlord
                             </Button>
 
+                            {/* Save Property */}
                             <Button
                                 variant="outline"
                                 size="lg"
