@@ -119,6 +119,10 @@ export function Navbar({ user }: NavbarProps) {
         if (action === "payment") {
             router.push("/payment");
         }
+
+        if (action === "profile") {
+            router.push("/profile");
+        }
     }
 
     return (
