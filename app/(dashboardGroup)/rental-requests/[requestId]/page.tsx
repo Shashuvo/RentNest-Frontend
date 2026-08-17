@@ -31,12 +31,19 @@ type RentalRequestDetailsPageProps = {
 const getStatusConfig = (status: string) => {
     switch (status) {
         case "APPROVED":
-        case "ACTIVE":
             return {
-                label: status,
+                label: "APPROVED",
                 icon: CheckCircle2,
                 classes:
-                    "border-2 border-green-200 bg-white text-green-700",
+                    "border-2 border-blue-600 bg-card text-blue-700 shadow-sm",
+            };
+
+        case "ACTIVE":
+            return {
+                label: "ACTIVE",
+                icon: CheckCircle2,
+                classes:
+                    "border-2 border-green-600 bg-card text-green-700 shadow-sm",
             };
 
         case "PENDING":
@@ -44,7 +51,7 @@ const getStatusConfig = (status: string) => {
                 label: "PENDING",
                 icon: Clock3,
                 classes:
-                    "border-2 border-yellow-600 bg-white text-yellow-700",
+                    "border-2 border-yellow-600 bg-card text-yellow-700 shadow-sm",
             };
 
         case "COMPLETED":
@@ -52,7 +59,7 @@ const getStatusConfig = (status: string) => {
                 label: "COMPLETED",
                 icon: CheckCircle2,
                 classes:
-                    "border-2 border-primary/80 bg-white text-primary",
+                    "border-2 border-gray-400 bg-card text-gray-600 shadow-sm",
             };
 
         case "REJECTED":
@@ -60,7 +67,8 @@ const getStatusConfig = (status: string) => {
             return {
                 label: status,
                 icon: XCircle,
-                classes: "border border-red-200 bg-white text-red-700",
+                classes:
+                    "border-2 border-red-600 bg-card text-red-700 shadow-sm",
             };
 
         default:
@@ -68,7 +76,7 @@ const getStatusConfig = (status: string) => {
                 label: status,
                 icon: Clock3,
                 classes:
-                    "border border-border bg-white text-muted-foreground",
+                    "border-2 border-border bg-card text-muted-foreground shadow-sm",
             };
     }
 };

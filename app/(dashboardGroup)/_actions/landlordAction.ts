@@ -1,6 +1,7 @@
 "use server";
 
 import { cookies } from "next/headers";
+import { revalidatePath } from "next/cache";
 
 import {
     PropertyDetailState,
@@ -88,6 +89,9 @@ export async function createProperty(
         );
     }
 
+    revalidatePath("/");
+    revalidatePath("/properties");
+
     return result as PropertyDetailState;
 }
 
@@ -127,6 +131,10 @@ export async function updateProperty(
         );
     }
 
+    revalidatePath("/");
+    revalidatePath("/properties");
+    revalidatePath(`/properties/${propertyId}`);
+
     return result;
 }
 
@@ -152,6 +160,10 @@ export async function deleteProperty(
             "Failed to delete property"
         );
     }
+
+    revalidatePath("/");
+    revalidatePath("/properties");
+    revalidatePath(`/properties/${propertyId}`);
 
     return result;
 }

@@ -6,6 +6,7 @@ import {
     Building2,
     ImagePlus,
     Info,
+    Loader2,
     MapPin,
     X,
 } from "lucide-react";
@@ -42,7 +43,7 @@ export interface PropertyFormData {
 interface PropertyFormProps {
     property?: Property | null;
     categories: Category[];
-    onSubmit: (data: PropertyFormData) => void;
+    onSubmit: (data: PropertyFormData) => void | Promise<void>;
     onCancel?: () => void;
 }
 
@@ -119,6 +120,8 @@ export function PropertyForm({
         property?.images ?? []
     );
 
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
     const totalImageCount = images.length + existingImages.length;
 
     const handleImageChange = (
@@ -153,24 +156,30 @@ export function PropertyForm({
         );
     };
 
-    const handleSubmit = (
+    const handleSubmit = async (
         event: React.FormEvent<HTMLFormElement>
     ) => {
         event.preventDefault();
 
-        onSubmit({
-            title,
-            description,
-            address,
-            city,
-            area: area ? Number(area) : null,
-            price: Number(price),
-            bedrooms: Number(bedrooms),
-            bathrooms: Number(bathrooms),
-            categoryId,
-            images,
-            existingImages,
-        });
+        try {
+            setIsSubmitting(true);
+
+            await onSubmit({
+                title,
+                description,
+                address,
+                city,
+                area: area ? Number(area) : null,
+                price: Number(price),
+                bedrooms: Number(bedrooms),
+                bathrooms: Number(bathrooms),
+                categoryId,
+                images,
+                existingImages,
+            });
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     return (
@@ -196,6 +205,7 @@ export function PropertyForm({
                         }
                         placeholder="Modern Family Apartment"
                         required
+                        disabled={isSubmitting}
                         className={inputClass}
                     />
                 </div>
@@ -220,6 +230,7 @@ export function PropertyForm({
                         placeholder="Describe your property..."
                         rows={4}
                         required
+                        disabled={isSubmitting}
                         className="rounded-2xl border border-border bg-background text-sm shadow-sm transition-colors focus-visible:border-primary focus-visible:ring-1 focus-visible:ring-primary"
                     />
                 </div>
@@ -243,8 +254,9 @@ export function PropertyForm({
                             onChange={(event) =>
                                 setAddress(event.target.value)
                             }
-                            placeholder="Khulshi"
+                            placeholder="Address"
                             required
+                            disabled={isSubmitting}
                             className={inputClass}
                         />
                     </div>
@@ -260,8 +272,9 @@ export function PropertyForm({
                             onChange={(event) =>
                                 setCity(event.target.value)
                             }
-                            placeholder="Chittagong"
+                            placeholder="City"
                             required
+                            disabled={isSubmitting}
                             className={inputClass}
                         />
                     </div>
@@ -295,6 +308,7 @@ export function PropertyForm({
                                 }
                                 placeholder="35,000"
                                 required
+                                disabled={isSubmitting}
                                 className={`${inputClass} pl-8`}
                             />
                         </div>
@@ -314,6 +328,7 @@ export function PropertyForm({
                                 setArea(event.target.value)
                             }
                             placeholder="1200"
+                            disabled={isSubmitting}
                             className={inputClass}
                         />
                     </div>
@@ -330,11 +345,12 @@ export function PropertyForm({
                         <Input
                             id="bedrooms"
                             type="number"
-                            min="1"
+                            min="0"
                             value={bedrooms}
                             onChange={(event) =>
                                 setBedrooms(event.target.value)
                             }
+                            disabled={isSubmitting}
                             className={inputClass}
                         />
                     </div>
@@ -348,11 +364,12 @@ export function PropertyForm({
                         <Input
                             id="bathrooms"
                             type="number"
-                            min="1"
+                            min="0"
                             value={bathrooms}
                             onChange={(event) =>
                                 setBathrooms(event.target.value)
                             }
+                            disabled={isSubmitting}
                             className={inputClass}
                         />
                     </div>
@@ -365,6 +382,7 @@ export function PropertyForm({
                             value={categoryId}
                             onValueChange={setCategoryId}
                             required
+                            disabled={isSubmitting}
                         >
                             <SelectTrigger className="h-11! w-full rounded-full border border-border bg-background px-4 text-sm shadow-sm transition-colors focus:border-primary focus:ring-1 focus:ring-primary">
                                 <SelectValue placeholder="Select category" />
@@ -400,7 +418,10 @@ export function PropertyForm({
 
                 <label
                     htmlFor="images"
-                    className="group flex cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed border-border p-8 text-center transition-colors hover:border-primary/40 hover:bg-primary/5"
+                    className={`group flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-border p-8 text-center transition-colors ${isSubmitting
+                        ? "pointer-events-none opacity-60"
+                        : "cursor-pointer hover:border-primary/40 hover:bg-primary/5"
+                        }`}
                 >
                     <span className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-primary transition-transform group-hover:scale-110">
                         <ImagePlus className="h-6 w-6" />
@@ -420,6 +441,7 @@ export function PropertyForm({
                         accept="image/png,image/jpeg,image/jpg"
                         multiple
                         className="hidden"
+                        disabled={isSubmitting}
                         onChange={handleImageChange}
                     />
                 </label>
@@ -458,7 +480,8 @@ export function PropertyForm({
                                         onClick={() =>
                                             handleRemoveExistingImage(index)
                                         }
-                                        className="absolute right-2 top-2 rounded-full bg-foreground/70 p-1.5 text-background shadow-sm backdrop-blur-md transition-colors hover:bg-destructive"
+                                        disabled={isSubmitting}
+                                        className="absolute right-2 top-2 rounded-full bg-foreground/70 p-1.5 text-background shadow-sm backdrop-blur-md transition-colors hover:bg-destructive disabled:opacity-50"
                                     >
                                         <X className="h-4 w-4" />
                                     </button>
@@ -493,7 +516,8 @@ export function PropertyForm({
                                             index
                                         )
                                     }
-                                    className="absolute right-2 top-2 rounded-full bg-foreground/70 p-1.5 text-background shadow-sm backdrop-blur-md transition-colors hover:bg-destructive"
+                                    disabled={isSubmitting}
+                                    className="absolute right-2 top-2 rounded-full bg-foreground/70 p-1.5 text-background shadow-sm backdrop-blur-md transition-colors hover:bg-destructive disabled:opacity-50"
                                 >
                                     <X className="h-4 w-4" />
                                 </button>
@@ -510,16 +534,28 @@ export function PropertyForm({
                         type="button"
                         variant="outline"
                         onClick={onCancel}
+                        disabled={isSubmitting}
                         className="rounded-full border-primary/20 px-5 text-primary hover:bg-primary hover:text-primary-foreground"
                     >
                         Cancel
                     </Button>
                 )}
 
-                <Button type="submit" className="rounded-full px-6 shadow-sm">
-                    {property
-                        ? "Update Property"
-                        : "Create Property"}
+                <Button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="rounded-full px-6 shadow-sm"
+                >
+                    {isSubmitting && (
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    )}
+                    {isSubmitting
+                        ? property
+                            ? "Updating..."
+                            : "Creating..."
+                        : property
+                            ? "Update Property"
+                            : "Create Property"}
                 </Button>
             </div>
         </form>

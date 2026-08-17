@@ -148,7 +148,7 @@ export default function PropertiesPage() {
                   </SelectTrigger>
                   <SelectContent className="p-2">
                     <SelectItem value="any">Any bedrooms</SelectItem>
-                    {[1, 2, 3, 4, 5].map((n) => (
+                    {[0, 1, 2, 3, 4, 5].map((n) => (
                       <SelectItem key={n} value={String(n)}>
                         {n} Bedroom{n > 1 ? "s" : ""}
                       </SelectItem>

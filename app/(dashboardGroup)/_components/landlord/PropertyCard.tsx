@@ -122,21 +122,21 @@ export function PropertyCard({
                 )}
 
                 {/* Category badge, top-left */}
-                <Badge className="absolute left-3 top-3 z-20 rounded-full border-0 bg-card px-3.5 py-1.5 text-sm font-semibold text-foreground shadow-lg">
+                <Badge className="absolute left-3 top-3 z-20 rounded-full border border-foreground bg-card px-3.5 py-3 text-sm font-semibold text-foreground shadow-lg">
                     {property.category.name}
                 </Badge>
 
                 {/* Availability badge, top-right */}
                 <Badge
-                    className={`absolute right-3 top-3 z-20 flex items-center gap-1.5 rounded-full border-0 px-3.5 py-1.5 text-sm font-semibold shadow-lg ${property.isAvailable
+                    className={`absolute right-3 top-3 z-20 flex items-center gap-1.5 rounded-full border-0 px-3.5 py-3 text-sm font-semibold shadow-lg ${property.isAvailable
                         ? "bg-emerald-500 text-white"
-                        : "bg-foreground/80 text-background"
+                        : "bg-primary/80 text-white"
                         }`}
                 >
                     <span
                         className={`h-2 w-2 rounded-full ${property.isAvailable
                             ? "bg-white"
-                            : "bg-background/70"
+                            : "bg-white"
                             }`}
                     />
                     {property.isAvailable ? "Available" : "Rented"}

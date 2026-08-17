@@ -24,21 +24,25 @@ type PaymentDetailPageProps = {
 
 const getStatusClasses = (status: string) => {
     switch (status) {
-        case "COMPLETED":
         case "APPROVED":
+            return "border-2 border-blue-600 bg-card text-blue-700 shadow-sm";
+
         case "ACTIVE":
-            return "bg-green-100 text-green-700";
+            return "border-2 border-green-600 bg-card text-green-700 shadow-sm";
 
         case "PENDING":
-            return "bg-yellow-100 text-yellow-700";
+            return "border-2 border-yellow-600 bg-card text-yellow-700 shadow-sm";
+
+        case "COMPLETED":
+            return "border-2 border-gray-400 bg-card text-gray-600 shadow-sm";
 
         case "FAILED":
         case "CANCELLED":
         case "REJECTED":
-            return "bg-red-100 text-red-700";
+            return "border-2 border-red-600 bg-card text-red-700 shadow-sm";
 
         default:
-            return "bg-muted text-muted-foreground";
+            return "border-2 border-border bg-card text-muted-foreground shadow-sm";
     }
 };
 

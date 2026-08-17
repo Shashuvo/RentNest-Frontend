@@ -2,11 +2,14 @@
 
 import { useEffect, useState } from "react";
 import {
+    AlertCircle,
     Building2,
     CheckCircle2,
     Home,
+    Loader2,
     Wallet,
 } from "lucide-react";
+import { toast } from "sonner";
 
 
 import { DashboardHeader } from "../_components/shared/DashboardHeader";
@@ -103,14 +106,19 @@ export default function LandlordDashboardPage() {
                     (property) => property.id !== propertyId
                 )
             );
+
+            toast.success("Property deleted");
         } catch (error) {
             console.error(error);
 
-            setError(
+            const message =
                 error instanceof Error
                     ? error.message
-                    : "Failed to delete property."
-            );
+                    : "Failed to delete property.";
+
+            toast.error("Failed to delete property", {
+                description: message,
+            });
         }
     };
 
@@ -161,6 +169,8 @@ export default function LandlordDashboardPage() {
                             : property
                     )
                 );
+
+                toast.success("Property updated");
             } else {
                 // Create new property
                 const result = await createProperty(
@@ -171,6 +181,8 @@ export default function LandlordDashboardPage() {
                     result.data,
                     ...currentProperties,
                 ]);
+
+                toast.success("Property created");
             }
 
             setIsDialogOpen(false);
@@ -178,11 +190,14 @@ export default function LandlordDashboardPage() {
         } catch (error) {
             console.error(error);
 
-            setError(
+            const message =
                 error instanceof Error
                     ? error.message
-                    : "Failed to save property."
-            );
+                    : "Failed to save property.";
+
+            toast.error("Failed to save property", {
+                description: message,
+            });
         }
     };
 
@@ -230,7 +245,7 @@ export default function LandlordDashboardPage() {
             {/* Properties */}
             <section className="space-y-4">
                 <div>
-                    <h2 className="text-lg font-semibold">
+                    <h2 className="font-serif text-lg">
                         My Properties
                     </h2>
 
@@ -240,16 +255,38 @@ export default function LandlordDashboardPage() {
                 </div>
 
                 {loading ? (
-                    <div className="rounded-xl border p-10 text-center">
-                        <p className="text-sm text-muted-foreground">
-                            Loading properties...
-                        </p>
+                    <div className="relative overflow-hidden rounded-3xl border bg-card p-10 text-center">
+                        <div className="pointer-events-none absolute -top-16 left-1/2 h-56 w-56 -translate-x-1/2 rounded-full bg-primary/10 blur-3xl" />
+
+                        <div className="relative flex flex-col items-center gap-3">
+                            <div className="flex h-11 w-11 items-center justify-center rounded-full bg-primary/10 text-primary">
+                                <Loader2 className="h-5 w-5 animate-spin" />
+                            </div>
+
+                            <p className="font-serif text-base">
+                                Loading properties...
+                            </p>
+
+                            <p className="text-sm text-muted-foreground">
+                                Fetching your listed properties.
+                            </p>
+                        </div>
                     </div>
                 ) : error ? (
-                    <div className="rounded-xl border p-10 text-center">
-                        <p className="text-sm text-destructive">
-                            {error}
-                        </p>
+                    <div className="relative overflow-hidden rounded-3xl border border-destructive/20 bg-card p-10 text-center">
+                        <div className="relative flex flex-col items-center gap-3">
+                            <div className="flex h-11 w-11 items-center justify-center rounded-full bg-destructive/10 text-destructive">
+                                <AlertCircle className="h-5 w-5" />
+                            </div>
+
+                            <p className="font-serif text-base">
+                                Something went wrong
+                            </p>
+
+                            <p className="text-sm text-destructive">
+                                {error}
+                            </p>
+                        </div>
                     </div>
                 ) : (
                     <PropertyList

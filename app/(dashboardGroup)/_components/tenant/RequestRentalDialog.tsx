@@ -22,12 +22,14 @@ type RequestRentalDialogProps = {
     propertyId: string;
     propertyTitle: string;
     isAvailable: boolean;
+    disabled?: boolean
 };
 
 export default function RequestRentalDialog({
     propertyId,
     propertyTitle,
     isAvailable,
+    disabled = false,
 }: RequestRentalDialogProps) {
     const [open, setOpen] = useState(false);
     const [message, setMessage] = useState("");
@@ -38,13 +40,25 @@ export default function RequestRentalDialog({
     const handleSubmit = () => {
         startTransition(async () => {
             try {
-                await createRentalRequest({
+                const result = await createRentalRequest({
                     propertyId,
                     message: message.trim() || undefined,
-                    moveInDate: moveInDate || undefined,
+                    moveInDate: moveInDate
+                        ? `${moveInDate}T00:00:00.000Z`
+                        : undefined,
                 });
 
-                toast.success("Rental request submitted successfully.");
+                if (!result.success) {
+                    toast.error(
+                        result.message ||
+                        "Failed to submit rental request."
+                    );
+                    return;
+                }
+
+                toast.success(
+                    "Rental request submitted successfully."
+                );
 
                 setSubmitted(true);
                 setOpen(false);
@@ -79,7 +93,7 @@ export default function RequestRentalDialog({
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button className="w-full rounded-full shadow-sm transition-shadow hover:shadow-[0_12px_30px_-10px_hsl(var(--primary)/0.5)]">
+                <Button disabled={disabled} className="w-full rounded-full shadow-sm transition-shadow hover:shadow-[0_12px_30px_-10px_hsl(var(--primary)/0.5)]">
                     Request to Rent
                 </Button>
             </DialogTrigger>

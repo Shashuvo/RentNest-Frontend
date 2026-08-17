@@ -10,7 +10,9 @@ const FeatureProperties = async () => {
 
     const propertiesRes: PropertyState = await getAllProperties();
 
-    const properties: Property[] = propertiesRes.data;
+    const properties: Property[] = [...propertiesRes.data]
+        .sort((a, b) => b.price - a.price)
+        .slice(0, 3);
 
 
     return (

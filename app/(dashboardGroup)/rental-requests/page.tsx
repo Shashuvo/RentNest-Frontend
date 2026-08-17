@@ -30,21 +30,23 @@ const getStatusLabel = (status: string) => {
 const getStatusClasses = (status: string) => {
     switch (status) {
         case "APPROVED":
+            return "border-2 border-blue-600 bg-card text-blue-700 shadow-sm";
+
         case "ACTIVE":
-            return "border-2 border-green-600 bg-white text-green-700";
+            return "border-2 border-green-600 bg-card text-green-700 shadow-sm";
 
         case "PENDING":
-            return "border-2 border-yellow-600 bg-white text-yellow-700";
+            return "border-2 border-yellow-600 bg-card text-yellow-700 shadow-sm";
 
         case "COMPLETED":
-            return "border-2 border-primary/80 bg-white text-primary";
+            return "border-2 border-gray-400 bg-card text-gray-600 shadow-sm";
 
         case "REJECTED":
         case "CANCELLED":
-            return "border-2 border-red-600 bg-white text-red-700";
+            return "border-2 border-red-600 bg-card text-red-700 shadow-sm";
 
         default:
-            return "border-2 border-border bg-white text-muted-foreground";
+            return "border-2 border-border bg-card text-muted-foreground shadow-sm";
     }
 };
 

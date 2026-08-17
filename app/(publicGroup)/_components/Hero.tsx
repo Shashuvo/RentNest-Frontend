@@ -2,27 +2,9 @@
 
 import Image from "next/image"
 import { useRouter } from "next/navigation"
-import { useEffect, useState } from "react"
-import { ArrowRight, MapPin, Search, ShieldCheck, Star, Users } from "lucide-react"
+import { ArrowRight, ShieldCheck, Star, Users } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select"
-import type { Category } from "@/lib/types"
-import { getAllCategories } from "../_actions/propertyAction"
-
-const priceRanges = [
-    { value: "any", label: "Any budget", minPrice: "", maxPrice: "" },
-    { value: "under-1500", label: "Under $1,500", minPrice: "", maxPrice: "1500" },
-    { value: "1500-2500", label: "$1,500 – $2,500", minPrice: "1500", maxPrice: "2500" },
-    { value: "over-2500", label: "$2,500+", minPrice: "2500", maxPrice: "" },
-]
 
 const trustStats = [
     { icon: ShieldCheck, value: "2,400+", label: "Verified homes" },
@@ -32,45 +14,6 @@ const trustStats = [
 
 export default function Hero() {
     const router = useRouter()
-
-    const [categories, setCategories] = useState<Category[]>([])
-    const [location, setLocation] = useState("")
-    const [propertyType, setPropertyType] = useState("any")
-    const [priceRange, setPriceRange] = useState("any")
-
-    useEffect(() => {
-        let ignore = false
-
-        getAllCategories()
-            .then((result) => {
-                if (!ignore) setCategories(result.data ?? [])
-            })
-            .catch(console.error)
-
-        return () => {
-            ignore = true
-        }
-    }, [])
-
-    function handleSearch(event: React.FormEvent<HTMLFormElement>) {
-        event.preventDefault()
-
-        const params = new URLSearchParams()
-
-        if (location.trim()) {
-            params.set("city", location.trim())
-        }
-
-        if (propertyType !== "any") {
-            params.set("categoryId", propertyType)
-        }
-
-        const selectedRange = priceRanges.find((range) => range.value === priceRange)
-        if (selectedRange?.minPrice) params.set("minPrice", selectedRange.minPrice)
-        if (selectedRange?.maxPrice) params.set("maxPrice", selectedRange.maxPrice)
-
-        router.push(`/properties?${params.toString()}`)
-    }
 
     return (
         <div className="relative overflow-hidden">
@@ -105,78 +48,10 @@ export default function Hero() {
                         Discover verified rental properties that match your lifestyle, budget, and preferred location.
                     </p>
 
-                    <form
-                        onSubmit={handleSearch}
-                        className="mt-9 w-full max-w-2xl rounded-2xl border border-border bg-card p-4 shadow-[0_16px_50px_-22px_hsl(var(--primary)/0.35)]"
-                        aria-label="Search rental properties"
-                    >
-                        <div className="grid gap-4 md:grid-cols-[1.25fr_1fr_1fr_auto] md:items-end">
-                            {/* Location */}
-                            <div>
-                                <label className="mb-2 block text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
-                                    Location
-                                </label>
-                                <div className="relative">
-                                    <MapPin className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-                                    <Input
-                                        value={location}
-                                        onChange={(event) => setLocation(event.target.value)}
-                                        placeholder="City"
-                                        className="h-11 rounded-full border border-border bg-background pl-9 text-sm shadow-sm transition-colors focus-visible:border-primary focus-visible:ring-1 focus-visible:ring-primary"
-                                    />
-                                </div>
-                            </div>
-
-                            {/* Property Type */}
-                            <div>
-                                <label className="mb-2 block text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
-                                    Property type
-                                </label>
-                                <Select value={propertyType} onValueChange={(value) => setPropertyType(value ?? "any")}>
-                                    <SelectTrigger className="h-11! w-full rounded-full border border-border bg-background px-4 text-sm shadow-sm transition-colors focus:border-primary focus:ring-1 focus:ring-primary">
-                                        <SelectValue placeholder="Any property" />
-                                    </SelectTrigger>
-                                    <SelectContent className="p-2">
-                                        <SelectItem value="any">Any property</SelectItem>
-                                        {categories.map((category) => (
-                                            <SelectItem key={category.id} value={category.id}>
-                                                {category.name}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                            </div>
-
-                            {/* Price Range */}
-                            <div>
-                                <label className="mb-2 block text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
-                                    Price range
-                                </label>
-                                <Select value={priceRange} onValueChange={(value) => setPriceRange(value ?? "any")}>
-                                    <SelectTrigger className="h-11! w-full rounded-full border border-border bg-background px-4 text-sm shadow-sm transition-colors focus:border-primary focus:ring-1 focus:ring-primary">
-                                        <SelectValue placeholder="Any budget" />
-                                    </SelectTrigger>
-                                    <SelectContent className="p-2">
-                                        {priceRanges.map((range) => (
-                                            <SelectItem key={range.value} value={range.value}>
-                                                {range.label}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                            </div>
-
-                            <Button type="submit" size="lg" className="h-11 rounded-full px-6 shadow-sm">
-                                <Search data-icon="inline-start" />
-                                Search
-                            </Button>
-                        </div>
-                    </form>
-
-                    <div className="mt-8 flex flex-wrap items-center gap-3">
+                    <div className="mt-9 flex flex-wrap items-center gap-3">
                         <Button
                             size="lg"
-                            className="group rounded-full px-5 shadow-sm"
+                            className="group rounded-full px-6 shadow-sm"
                             onClick={() => router.push("/properties")}
                         >
                             Browse properties
@@ -188,7 +63,7 @@ export default function Hero() {
                         <Button
                             variant="outline"
                             size="lg"
-                            className="rounded-full border-primary/20 bg-transparent px-5 text-primary hover:bg-primary hover:text-primary-foreground"
+                            className="rounded-full border-primary/20 bg-transparent px-6 text-primary hover:bg-primary hover:text-primary-foreground"
                         >
                             List your property
                         </Button>
@@ -199,8 +74,8 @@ export default function Hero() {
                         {trustStats.map((stat) => {
                             const Icon = stat.icon
                             return (
-                                <div key={stat.label} className="flex items-center gap-2.5">
-                                    <span className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/10 text-primary">
+                                <div key={stat.label} className="group flex items-center gap-2.5">
+                                    <span className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/10 text-primary transition-all duration-300 group-hover:bg-primary group-hover:text-primary-foreground">
                                         <Icon className="size-4" />
                                     </span>
                                     <div>
@@ -231,39 +106,33 @@ export default function Hero() {
                         <div className="absolute inset-0 bg-linear-to-t from-foreground/45 via-transparent to-transparent" />
 
                         {/* Bottom caption, no fake listing data */}
-                        <div className="absolute inset-x-5 bottom-5 rounded-2xl border border-background/20 bg-foreground/30 p-4 text-background backdrop-blur-md">
-                            <p className="font-serif text-lg leading-snug">
+                        <div className="absolute inset-x-4 bottom-4 rounded-2xl border border-background/20 bg-foreground/30 p-3.5 text-background backdrop-blur-md sm:inset-x-5 sm:bottom-5 sm:p-4">
+                            <p className="font-serif text-base leading-snug sm:text-lg">
                                 Every home, thoroughly verified.
                             </p>
-                            <p className="mt-1 text-sm text-background/80">
+                            <p className="mt-1 text-xs text-background/80 sm:text-sm">
                                 Real listings. Real landlords. Real peace of mind.
                             </p>
                         </div>
                     </div>
 
-                    <div className="absolute right-4 top-4 hidden items-center gap-3 rounded-2xl border border-border bg-card/95 p-3 shadow-xl backdrop-blur-sm sm:flex">
-                        <span className="flex size-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                            <ShieldCheck aria-hidden="true" className="size-5" />
+                    <div className="absolute right-3 top-3 flex items-center gap-2.5 rounded-2xl border border-border bg-card/95 p-2.5 shadow-xl backdrop-blur-sm sm:right-4 sm:top-4 sm:gap-3 sm:p-3">
+                        <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary sm:size-10">
+                            <ShieldCheck aria-hidden="true" className="size-4 sm:size-5" />
                         </span>
                         <span>
-                            <strong className="block text-sm text-foreground">100% verified</strong>
-                            <span className="text-xs text-muted-foreground">Every home, checked</span>
+                            <strong className="block text-xs text-foreground sm:text-sm">100% verified</strong>
+                            <span className="text-[11px] text-muted-foreground sm:text-xs">Every home, checked</span>
                         </span>
                     </div>
 
-                    <div className="absolute bottom-32 -left-6 hidden items-center gap-2 rounded-2xl border border-border bg-card/95 px-3.5 py-2.5 shadow-xl backdrop-blur-sm sm:flex">
-                        <div className="flex -space-x-2">
-                            {["A", "B", "C"].map((letter) => (
-                                <span
-                                    key={letter}
-                                    className="flex size-7 items-center justify-center rounded-full border-2 border-card bg-primary/15 text-[10px] font-semibold text-primary"
-                                >
-                                    {letter}
-                                </span>
-                            ))}
-                        </div>
-                        <span className="text-xs font-medium text-foreground">
-                            +15k tenants trust us
+                    <div className="absolute bottom-24 left-3 flex items-center gap-2.5 rounded-2xl border border-border bg-card/95 p-2.5 shadow-xl backdrop-blur-sm sm:bottom-28 sm:-left-6 sm:gap-3 sm:p-3">
+                        <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary sm:size-10">
+                            <Star aria-hidden="true" className="size-4 fill-primary sm:size-5" />
+                        </span>
+                        <span>
+                            <strong className="block text-xs text-foreground sm:text-sm">4.9 rating</strong>
+                            <span className="text-[11px] text-muted-foreground sm:text-xs">From 15k+ tenants</span>
                         </span>
                     </div>
                 </div>

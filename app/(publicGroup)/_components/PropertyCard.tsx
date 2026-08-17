@@ -40,8 +40,14 @@ export default function PropertyCard({ property }: PropertyCardProps) {
     };
 
     return (
-        <article className="group relative rounded-[28px] bg-linear-to-b from-border/80 via-border/40 to-transparent p-px shadow-sm transition-all duration-500 hover:-translate-y-1.5 hover:from-primary/60 hover:via-primary/20 hover:shadow-[0_28px_70px_-28px_hsl(var(--primary)/0.5)]">
+        <article className="group relative rounded-[28px] bg-linear-to-b from-border/80 via-border/40 to-transparent p-px shadow-md transition-all duration-500 hover:-translate-y-1.5 hover:from-primary/60 hover:via-primary/20 hover:shadow-[0_28px_70px_-28px_hsl(var(--primary)/0.5)]">
             <div className="relative overflow-hidden rounded-[27px] bg-card">
+                {/* Ambient glow accent */}
+                <div
+                    className="pointer-events-none absolute -right-12 -top-12 z-10 h-48 w-48 rounded-full bg-primary/20 opacity-0 blur-3xl transition-opacity duration-300 group-hover:opacity-70"
+                    aria-hidden="true"
+                />
+
                 {/* Property Image */}
                 <Link href={`/properties/${property.id}`}>
                     <div className="relative aspect-16/10 overflow-hidden">
@@ -96,39 +102,34 @@ export default function PropertyCard({ property }: PropertyCardProps) {
                                     ))}
                                 </div>
 
-                                {/* Image count badge */}
-                                <div className="absolute right-3 top-3 z-20 rounded-full bg-black/50 px-2.5 py-1 text-[11px] font-medium text-white shadow-sm backdrop-blur-md">
-                                    {activeIndex + 1}/{images.length}
+                                {/* Image count badge — bottom-right */}
+                                <div className="absolute bottom-3 right-3 z-20 rounded-full bg-black/60 px-2.5 py-1 text-[11px] font-medium text-white shadow-sm backdrop-blur-md">
+                                    {activeIndex + 1} / {images.length}
                                 </div>
                             </>
                         )}
 
-                        {/* Availability */}
-                        <div className="absolute left-3 top-3 z-10">
-                            <span
-                                className={`flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium shadow-sm backdrop-blur-md ${property.isAvailable
-                                    ? "bg-[oklch(0.65_0.15_155)] text-white"
-                                    : "bg-primary text-white"
-                                    }`}
-                            >
-                                <span className="h-1.5 w-1.5 rounded-full bg-white" />
-                                {property.isAvailable ? "Available" : "Not Available"}
-                            </span>
-                        </div>
+                        {/* Availability badge — top-left */}
+                        <span
+                            className={`absolute left-3 top-3 z-10 flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold shadow-lg ${property.isAvailable
+                                ? "bg-emerald-500 text-white"
+                                : "bg-primary/80 text-white"
+                                }`}
+                        >
+                            <span className="h-1.5 w-1.5 rounded-full bg-white" />
+                            {property.isAvailable ? "Available" : "Not Available"}
+                        </span>
 
-                        {/* Category */}
-                        {!hasMultipleImages && (
-                            <div className="absolute right-3 top-3 z-10">
-                                <span className="rounded-full bg-white/90 px-3 py-1 text-xs font-medium text-foreground shadow-sm backdrop-blur-md">
-                                    {property.category.name}
-                                </span>
-                            </div>
-                        )}
+                        {/* Category badge — top-right, always visible */}
+                        <span className="absolute right-3 top-3 z-10 rounded-full border border-primary bg-card px-3 py-1 text-xs font-semibold text-primary shadow-lg">
+                            {property.category.name}
+                        </span>
+
                     </div>
                 </Link>
 
                 {/* Content */}
-                <div className="p-4">
+                <div className="relative p-4">
                     {/* Price + category */}
                     <div className="flex items-start justify-between gap-2">
                         <div className="flex items-baseline gap-1.5">
@@ -200,8 +201,11 @@ export default function PropertyCard({ property }: PropertyCardProps) {
                                     className="h-8.5 w-8.5 shrink-0 rounded-full object-cover ring-2 ring-primary/10"
                                 />
                             ) : (
-                                <div className="flex h-8.5 w-8.5 shrink-0 items-center justify-center rounded-full bg-muted text-sm font-semibold text-foreground ring-2 ring-primary/10">
-                                    {property.landlord.name.charAt(0)}
+                                <div className="flex h-8.5 w-8.5 shrink-0 items-center justify-center rounded-full border border-primary bg-primary/10 text-sm font-semibold text-primary ring-2 ring-primary/10">
+                                    {(property.landlord.name || "John Doe")
+                                        .split(" ")
+                                        .map((n) => n[0])
+                                        .join("")}
                                 </div>
                             )}
 
@@ -222,6 +226,9 @@ export default function PropertyCard({ property }: PropertyCardProps) {
                         </Link>
                     </div>
                 </div>
+
+                {/* Animated accent bar */}
+                <div className="pointer-events-none absolute bottom-0 left-0 z-10 h-1 w-0 rounded-full bg-primary transition-all duration-500 group-hover:w-full" />
             </div>
         </article>
     );

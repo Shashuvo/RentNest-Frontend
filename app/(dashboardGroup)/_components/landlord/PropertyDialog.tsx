@@ -22,7 +22,7 @@ interface PropertyDialogProps {
     onOpenChange: (open: boolean) => void;
     property?: Property | null;
     categories: Category[];
-    onSubmit: (data: PropertyFormData) => void;
+    onSubmit: (data: PropertyFormData) => void | Promise<void>;
 }
 
 export function PropertyDialog({
