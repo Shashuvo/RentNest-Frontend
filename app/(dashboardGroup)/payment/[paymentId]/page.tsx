@@ -175,7 +175,7 @@ export default async function PaymentDetailPage({
 
                                     <div>
                                         <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
-                                            Created
+                                            Payment Created
                                         </p>
 
                                         <p className="mt-1 font-serif text-xl">

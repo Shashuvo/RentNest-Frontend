@@ -32,15 +32,13 @@ export default async function PaymentSuccessPage({
                     </h1>
 
                     <p className="mx-auto mt-3 max-w-md text-sm leading-6 text-muted-foreground">
-                        Your payment has been submitted successfully.
-                        Your rental will become active once Stripe
-                        confirms the payment through the payment webhook.
+                        Your payment has been confirmed and your rental is now active.
                     </p>
 
                     {session_id && (
                         <div className="mt-5 rounded-2xl border border-dashed border-border bg-background/60 p-4 text-left">
                             <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
-                                Stripe Session ID
+                                Payment Reference
                             </p>
 
                             <p className="mt-1 break-all font-mono text-xs">

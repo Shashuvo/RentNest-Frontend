@@ -22,8 +22,8 @@ export default function PaymentCancelPage() {
                     </h1>
 
                     <p className="mx-auto mt-3 max-w-md text-sm leading-6 text-muted-foreground">
-                        Your payment was cancelled or you returned from
-                        Stripe without completing the checkout.
+                        Your payment was cancelled. No payment was completed, and
+                        you can try again whenever you&apos;re ready.
                     </p>
 
                     <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-center">
