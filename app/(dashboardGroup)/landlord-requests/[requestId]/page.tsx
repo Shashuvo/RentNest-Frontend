@@ -389,6 +389,28 @@ export default async function LandlordRequestDetailsPage({
                             </div>
                         </div>
                     </section>
+
+                    {/* Payment Confirmation */}
+                    {request.status === "ACTIVE" && (
+                        <section className="rounded-2xl border border-border bg-card p-6 shadow-sm">
+                            <div className="flex items-start gap-3">
+                                <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary ring-4 ring-primary/10">
+                                    <CheckCircle2 className="size-5" />
+                                </div>
+
+                                <div>
+                                    <h2 className="font-serif text-lg tracking-tight">
+                                        Payment Confirmed
+                                    </h2>
+
+                                    <p className="mt-1.5 text-sm leading-6 text-muted-foreground">
+                                        The tenant has completed the required payment and this
+                                        rental is now active.
+                                    </p>
+                                </div>
+                            </div>
+                        </section>
+                    )}
                 </div>
 
                 {/* Sidebar */}
@@ -415,7 +437,7 @@ export default async function LandlordRequestDetailsPage({
                                         ? "Tenant can proceed with payment"
                                         : request.status ===
                                             "ACTIVE"
-                                            ? "Rental is currently active"
+                                            ? "Payment confirmed and rental is active"
                                             : request.status ===
                                                 "COMPLETED"
                                                 ? "Rental has been completed"
