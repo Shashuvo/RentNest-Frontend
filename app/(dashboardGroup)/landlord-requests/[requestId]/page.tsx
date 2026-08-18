@@ -393,19 +393,22 @@ export default async function LandlordRequestDetailsPage({
                     {/* Payment Confirmation */}
                     {request.status === "ACTIVE" && (
                         <section className="rounded-2xl border border-border bg-card p-6 shadow-sm">
-                            <div className="flex items-start gap-3">
-                                <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary ring-4 ring-primary/10">
-                                    <CheckCircle2 className="size-5" />
+                            <h2 className="font-serif text-lg tracking-tight">
+                                Payment Confirmation
+                            </h2>
+
+                            <div className="mt-4 flex items-center gap-3">
+                                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+                                    <CheckCircle2 className="h-4 w-4" />
                                 </div>
 
                                 <div>
-                                    <h2 className="font-serif text-lg tracking-tight">
-                                        Payment Confirmed
-                                    </h2>
+                                    <p className="text-sm font-medium">
+                                        Payment Completed
+                                    </p>
 
-                                    <p className="mt-1.5 text-sm leading-6 text-muted-foreground">
-                                        The tenant has completed the required payment and this
-                                        rental is now active.
+                                    <p className="text-xs text-muted-foreground">
+                                        Rental is now active
                                     </p>
                                 </div>
                             </div>
